@@ -1,0 +1,4 @@
+Plan:
+- Motivations: probabiliste, Bayésien, non-parametric
+- Vecteur Gaussien vs. Processus Gaussien
+- 

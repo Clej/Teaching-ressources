@@ -1,0 +1,87 @@
+\documentclass[xcolor=svgnames, t]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs, comment} 
+\usepackage[absolute, overlay]{textpos} 
+\useoutertheme{infolines} 
+\setbeamercolor{title in head/foot}{bg=internationalorange}
+\setbeamercolor{author in head/foot}{bg=dodgerblue}
+\usepackage{csquotes}
+\usepackage{enumerate}
+%\usepackage{enumitem}
+% \usepackage[citestyle=authoryear,backend=bibtex,citetracker=true]{biblatex}
+% \bibliography{bibfile}
+
+\usepackage{amsmath}
+% \usepackage{mathabx}
+% \newcommand{\stup}{{\scriptsize $\blacktriangle$ }}
+% \newcommand{\stdown}{$\blacktriangledown$ }
+\newcommand{\eg}{\textit{e.g. }}
+\newcommand{\ie}{\textit{i.e. }}
+% \newcommand{\Rlogo}{\includegraphics[scale = 0.02]{images/Rlogo.png}}
+% \newcommand{\Pythonlogo}{\includegraphics[scale = 0.075]{images/Pythonlogo.png}}
+
+% math commands
+\newcommand{\norm}[2]{\lVert #1 \rVert_{#2}}
+\newcommand{\dictx}{\mathbf{\Theta}_{X_n}}
+\newcommand{\vectorx}[1]{\boldsymbol{\MakeLowercase{\mathbf{#1}}}}
+\newcommand{\matrixx}[1]{\boldsymbol{\MakeUppercase{#1}}}
+\newcommand{\argmin}{\mathop{\mathrm{arg\,min}}}
+\newcommand{\argmax}{\mathop{\mathrm{arg\,max}}}
+\newcommand{\argminx}[1]{\arg\min_{#1}}
+\newcommand{\dotprod}[2]{\langle #1, #2 \rangle}
+
+% Images location
+\graphicspath{ {./images/} }
+
+\usepackage{textpos}
+\usetheme{Madrid}
+\definecolor{myuniversity}{RGB}{0, 86, 119}
+\definecolor{internationalorange}{RGB}{255, 76, 0}
+\definecolor{dodgerblue}{RGB}{0, 86, 19}
+\usecolortheme[named=myuniversity]{structure}
+\usepackage{tikz}
+
+
+\title[Introduction aux Processus Gaussiens]{Introduction aux Processus Gaussiens}
+\subtitle{Applications aux données spatio-temporelles}
+\institute[]{}
+% \titlegraphic{
+% 	\includegraphics[height=1.5cm]{Logo_intitule_horizontal_2lignes.png}
+% 	\includegraphics[height=1.5cm]{images/UT3_PRES_logoQ.png}
+% }
+\author[Cl\'ement Lejeune]{Cl\'ement Lejeune}
+
+\institute[TSN/AD/AD3/IA]{
+Thales Services Numériques,
+\\ AD/AD3/IA
+}
+%\date{\today}
+\date{25 Novembre 2024}
+
+\addtobeamertemplate{navigation symbols}{}{%
+	\usebeamerfont{footline}%
+	\usebeamercolor[fg]{footline}%
+	\hspace{1em}%
+	\insertframenumber/\inserttotalframenumber
+}
+
+\begin{document}
+
+%========== First frame ==========================%
+%Information to be included in the title page:
+
+\begin{document}
+
+\frame{\titlepage}
+
+%========== ToC ==========================%
+% \AtBeginSection[]
+{
+  \begin{frame}
+    \frametitle{Table of Contents}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\end{document}
