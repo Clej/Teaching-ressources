@@ -1,4 +1,21 @@
 Plan:
-- Motivations: probabiliste, Bayésien, non-parametric
+
 - Vecteur Gaussien vs. Processus Gaussien
-- 
+    - 2d Gaussien
+    - Construction Nd ... infinite dimensional
+    - Définition
+
+- Motivations:
+    - Où utiliser des processus Gaussiens ? Données et modèles
+    - probabiliste (uncertainty)
+    - Bayésien (prior)
+    - Non-paramétrique
+    - Tractabilité mathématique: addition, conditionnement, opérateur linéaire
+
+- Utilisation
+    - Choix du kernel, vraissemblance
+    - Apprentissage
+    - Prédiction, évaluation
+
+- Processus Gaussien pour les cas non-Gaussiens
+
