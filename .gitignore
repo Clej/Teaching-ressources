@@ -6,3 +6,13 @@
 *.snm
 *.synctex.gz
 *.toc
+
+# Thales
+*thales*
+*Thales*
+
+# python
+*.pyc
+*.pyd
+*.pyo
+**/__pycache/
