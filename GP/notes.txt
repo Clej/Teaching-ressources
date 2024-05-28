@@ -7,15 +7,22 @@ Plan:
 
 - Motivations:
     - Où utiliser des processus Gaussiens ? Données et modèles
-    - probabiliste (uncertainty)
+    - probabiliste (uncertainty) => génératif
     - Bayésien (prior)
     - Non-paramétrique
     - Tractabilité mathématique: addition, conditionnement, opérateur linéaire
 
 - Utilisation
     - Choix du kernel, vraissemblance
-    - Apprentissage
+    - Estimation a.k.a "apprentissage"
     - Prédiction, évaluation
+
+- Application
+    - Séries temporelles
+    - Forecasting,
+    - Valeurs manquantes
+    - Modélisation
+
 
 - Processus Gaussien pour les cas non-Gaussiens
 
