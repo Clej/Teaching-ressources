@@ -70,12 +70,15 @@ def scatter_hist(x, y, margin_hist=True, fig=None):
 #----------------------#
 #------ Misc ----------#
 #----------------------#
-def numpy_to_latex(matrix):
+def numpy_to_latex(matrix, n_decimals=2):
     """Convert a numpy array into a LaTeX matrix."""
 
     if not isinstance(matrix, np.ndarray):
         raise ValueError("Must be a numpy array.")
 
+    factor = 10**n_decimals
+    matrix = np.trunc(matrix * factor) / factor
+    
     lines = str(matrix).replace('[', '').replace(']', '').splitlines()
     latex_matrix = "\\begin{bmatrix}\n"
     latex_matrix += " \\\\\n".join([" & ".join(line.split()) for line in lines])

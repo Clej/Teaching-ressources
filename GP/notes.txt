@@ -10,7 +10,7 @@ Plan:
     - probabiliste (uncertainty) => génératif
     - Bayésien (prior)
     - Non-paramétrique
-    - Tractabilité mathématique: addition, conditionnement, opérateur linéaire
+    - Tractabilité mathématique: addition, conditionnement, opérateur linéaire, lien erreur quadratique
 
 - Utilisation
     - Choix du kernel, vraissemblance

@@ -42,6 +42,8 @@
 \usecolortheme[named=myuniversity]{structure}
 \usepackage{tikz}
 
+\newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
+
 \logo{\includegraphics[scale=0.25]{Thales.png}}
 \setbeamercolor{title in head/foot}{bg=internationalblue}
 \setbeamercolor{author in head/foot}{bg=dodgerblue}
@@ -161,8 +163,8 @@ Thales Services Numériques,
       \end{bmatrix}
     =
       \begin{bmatrix}
-        \Sigma_{11} & \color{red}\rho = -0.3 \\
-        \color{red}\rho = -0.3 & \Sigma_{22}
+        1.5 & \color{red}\rho = -0.3 \\
+        \color{red}\rho = -0.3 & 1.5
       \end{bmatrix}
   \end{equation*}
 % 
@@ -191,8 +193,8 @@ Thales Services Numériques,
       \end{bmatrix}
     =
       \begin{bmatrix}
-        \Sigma_{11} & \color{red}\rho = 1.1 \\
-        \color{red}\rho = 1.1 & \Sigma_{22}
+        1.5 & \color{red}\rho = 1.1 \\
+        \color{red}\rho = 1.1 & 1.5
       \end{bmatrix}
   \end{equation*}
 % 
@@ -221,8 +223,8 @@ Thales Services Numériques,
       \end{bmatrix}
     =
       \begin{bmatrix}
-        \Sigma_{11} & \color{red}\rho = 0 \\
-        \color{red}\rho = 0 & \Sigma_{22}
+        1.5 & \color{red}\rho = 0 \\
+        \color{red}\rho = 0 & 1.5
       \end{bmatrix}
   \end{equation*}
 % 
@@ -257,8 +259,10 @@ Thales Services Numériques,
   %
   \begin{figure}[ht]
     \includegraphics[scale=0.3]{gaussian_2d_2outof5.pdf}
+    $\Longleftrightarrow$
     \includegraphics[scale=0.3]{gaussian_2d_valuevsindex.pdf}
-    \caption{Dimensions $j=1, 2$ uniquement.}
+    \caption{Dimensions $j=1, 2$. Gauche: \textcolor{violet}{$10^4$} $+8$ échantillons. 
+    Droite: $8$ \coloredemph{mêmes} échantillons.}
   \end{figure}
 \end{frame}
 
@@ -286,10 +290,59 @@ Thales Services Numériques,
       \end{bmatrix}
   \end{equation*}
   %
+  Chaque courbe est un tirage de $\mathcal{N}(\vectorx{\mu} , \matrixx{\Sigma})$
   \begin{figure}[ht]
-    \includegraphics[scale=0.4]{gaussian_nd_valuevsindex.pdf}
-    \caption{Toutes les dimensions $j=1, \dots, d$}
+    \includegraphics[scale=0.3]{gaussian_5d_valuevsindex.pdf}
+    \caption{$8$ échantillons, dimensions $j=1, \dots, 5$}
   \end{figure}
+\end{frame}
+
+% d=50, high correlation: scatter and index plots
+\begin{frame}
+  Cas $d=50$:
+  %
+  \begin{equation*}
+    \vectorx{\mu}
+    =
+    \begin{pmatrix}
+      0 \\
+      0 \\
+      \dots
+    \end{pmatrix},
+    \quad
+    \matrixx{\Sigma}
+    =
+    \scalemath{0.65}{
+      \begin{bmatrix}
+        1.5 & 0.998 & 0.993 & 0.986 & 0.975 & 0.962 & 0.946 & 0.927 & \cdots \\
+        0.998 & 1.5 & 0.998 & 0.993 & 0.986 & 0.975 & 0.962 & 0.946 & \cdots \\
+        0.993 & 0.998 & 1.5 & 0.998 & 0.993 & 0.986 & 0.975 & 0.962 & \cdots \\
+        0.986 & 0.993 & 0.998 & 1.5 & 0.998 & 0.993 & 0.986 & 0.975 & \cdots \\
+        0.975 & 0.986 & 0.993 & 0.998 & 1.5 & 0.998 & 0.993 & 0.986 & \cdots \\
+        0.962 & 0.975 & 0.986 & 0.993 & 0.998 & 1.5 & 0.998 & 0.993 & \cdots \\
+        0.946 & 0.962 & 0.975 & 0.986 & 0.993 & 0.998 & 1.5 & 0.998 & \cdots \\
+        0.927 & 0.946 & 0.962 & 0.975 & 0.986 & 0.993 & 0.998 & 1.5   \\
+        \hdots & \hdots & \hdots & \hdots & \hdots & \hdots & \hdots & \hdots & 1.5
+      \end{bmatrix}
+    }
+  \end{equation*}
+  Chaque courbe est un tirage de $\mathcal{N}(\vectorx{\mu} , \matrixx{\Sigma})$
+  %
+  \begin{figure}[ht]
+    \includegraphics[scale=0.3]{gaussian_50d_valuevsindex.pdf}
+    \caption{$8$ échantillons, dimensions $j=1, \dots, 50$}
+  \end{figure}
+\end{frame}
+%
+
+\begin{frame}
+  Cas $d=\infty$: chaque courbe est une \coloredemph{collection infinie} d'échantillons Gaussiens.
+  \begin{enumerate}
+    \item $\vectorx{\mu}$: vecteur de taille infinie
+    \item $\matrixx{\Sigma}$: une fonction de covariance
+  \end{enumerate}
+  %
+  % Définition d'un processus Gaussien
 \end{frame}
 %========== Motivations ==================%
 % \section{Motivations}

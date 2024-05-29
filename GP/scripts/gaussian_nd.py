@@ -6,6 +6,7 @@ Plot:
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import multivariate_normal
+from sklearn.metrics.pairwise import rbf_kernel
 from utils import scatter_hist, numpy_to_latex
 
 np.random.seed(seed=3004666)
@@ -24,10 +25,6 @@ sigma_high = np.array(
      [0.98, 0.99, variance, 0.99, 0.98],
      [0.96, 0.98, 0.99, variance, 0.99],
      [0.94, 0.96, 0.98, 0.99, variance]]
-)
-
-print(
-    numpy_to_latex(sigma_high)
 )
 
 gauss_anis_high = multivariate_normal(mean=mu, cov=sigma_high)
@@ -62,7 +59,7 @@ for i, idx in enumerate(idx_rnd):
     )
 
 # legend
-fig_2d.legend(loc='upper center', frameon=False, ncols=4, fontsize='small')
+fig_2d.legend(loc='upper center', frameon=False, fontsize='small', ncol=4)
 fig_2d.savefig(
     './images/gaussian_2d_2outof5.pdf',
     bbox_inches='tight', pad_inches = 0
@@ -71,11 +68,11 @@ fig_2d.savefig(
 # 2nd plot:
 ### Same N samples with all their marginals: 
 ### ordonate are values, abscissa are dimension index
-fig_nd, ax_nd = plt.subplots(1, 1, figsize=fig_2d.get_size_inches())
+fig_5d, ax_5d = plt.subplots(1, 1, figsize=fig_2d.get_size_inches())
 
 # nD scatter plot: "values vs. index dimension"
 for i, idx in enumerate(idx_rnd):
-    ax_nd.plot(
+    ax_5d.plot(
         np.arange(d),
         Y[idx, :],
         linestyle='solid',
@@ -83,19 +80,21 @@ for i, idx in enumerate(idx_rnd):
         marker='x'
     )
 
-ax_nd.set_xticks(np.arange(d), labels=[rf'$y_{j+1}$' for j in range(d)])
-ax_nd.set_xlabel('Dimension')
+ax_5d.set_ylim((-5, 5))
+tcks = np.arange(d)
+ax_5d.set_xticks(tcks, labels=[rf'$y_{j}$' for j in tcks], fontsize='x-large')
+ax_5d.set_xlabel('Dimension')
 
-fig_nd.savefig(
-    f'./images/gaussian_nd_valuevsindex.pdf',
+fig_5d.savefig(
+    f'./images/gaussian_5d_valuevsindex.pdf',
     bbox_inches='tight', pad_inches = 0
 )
 
 # 2nd plot (bis): same as above but with dimension 1 and 2 only
-fig_nd, ax_nd = plt.subplots(1, 1, figsize=fig_2d.get_size_inches())
+fig_5d, ax_5d = plt.subplots(1, 1, figsize=fig_2d.get_size_inches())
 
 for i, idx in enumerate(idx_rnd):
-    ax_nd.plot(
+    ax_5d.plot(
         np.arange(2),
         Y[idx, :2],
         linestyle='solid',
@@ -103,10 +102,53 @@ for i, idx in enumerate(idx_rnd):
         marker='x'
     )
 
-ax_nd.set_xticks(np.arange(d), labels=[rf'$y_{j+1}$' for j in range(d)])
-ax_nd.set_xlabel('Dimensions')
+ax_5d.set_ylim((-5, 5))
+tcks = np.arange(d)
+ax_5d.set_xticks(tcks, labels=[rf'$y_{j}$' for j in tcks], fontsize='x-large')
+ax_5d.set_xlabel('Dimensions')
 
-fig_nd.savefig(
+fig_5d.savefig(
     f'./images/gaussian_2d_valuevsindex.pdf',
+    bbox_inches='tight', pad_inches = 0
+)
+
+# 3rd plot, d=50:
+### Same N samples with all their marginals: 
+### ordonate are values, abscissa are dimension index
+d = 50
+a = 8
+t = np.linspace(-a, a, num=d)
+mu = [0]*d
+sigma_rbf = rbf_kernel(t.reshape(-1, 1), gamma=1.0)
+# sigma_rbf[np.diag_indices(d)] *= variance
+# sigma_rbf /= 10.0
+
+# print(numpy_to_latex(sigma_rbf, 3))
+
+gauss_rbf = multivariate_normal(mean=mu, cov=sigma_rbf)
+Y = gauss_rbf.rvs(size=N)
+
+fig_100d, ax_100d = plt.subplots(1, 1, figsize=fig_2d.get_size_inches())
+
+for i in range(N):
+    ax_100d.plot(
+        np.arange(d),
+        Y[i, :],
+        linestyle='solid',
+        color=colors_N[i],
+        marker='x'
+    )
+
+# ax_nd.set_ylim((-5, 5))
+tcks = np.arange(d)[::5]
+
+ax_100d.set_xticks(
+    tcks,
+    labels=[r"$y_{{{:2d}}}$".format(j) for j in tcks],
+    fontsize='x-large'
+)
+ax_100d.set_xlabel('Dimensions')
+fig_100d.savefig(
+    f'./images/gaussian_{d}d_valuevsindex.pdf',
     bbox_inches='tight', pad_inches = 0
 )
