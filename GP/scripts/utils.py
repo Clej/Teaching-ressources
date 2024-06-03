@@ -59,8 +59,8 @@ def scatter_hist(x, y, margin_hist=True, fig=None):
 
     # 2d data
     ax.scatter(x, y, c=color, marker='.', s=1.0)
-    ax.set_xlabel(r'$y_1$', fontsize='x-large')
-    ax.set_ylabel(r'$y_2$', fontsize='x-large')
+    ax.set_xlabel(r'$y_1$', fontsize='large')
+    ax.set_ylabel(r'$y_2$', fontsize='large')
 
     if margin_hist:
         return fig, ax, ax_histx, ax_histy
@@ -68,7 +68,22 @@ def scatter_hist(x, y, margin_hist=True, fig=None):
     return fig, ax
 
 #----------------------#
-#------ Misc ----------#
+#--------- GP ---------#
+#----------------------#
+def gen_1D_gp(model, x, N):
+    """Draw N GPs with given kernel and mean."""
+
+    model.gpr.likelihood.scale.assign(value=1.0, train=False)
+    d = 1
+    # convert to 2D array of (1D) grid values
+    return model.gpr.sample_f(
+        Z=np.copy(x).reshape((-1, d)),
+        n=N,
+        prior=True
+    ).numpy().T
+
+#----------------------#
+#--- Latex useful -----#
 #----------------------#
 def numpy_to_latex(matrix, n_decimals=2):
     """Convert a numpy array into a LaTeX matrix."""
@@ -85,3 +100,20 @@ def numpy_to_latex(matrix, n_decimals=2):
     latex_matrix += "\n\\end{bmatrix}"
 
     return latex_matrix
+
+def get_figsize(columnwidth, wf=0.5, hf=(5.**0.5-1.0)/2.0, ):
+    """
+    Return figure size in inches given the column with of a LaTeX template.
+        columnwidth [float]: width of the column in latex. Get this from LaTeX 
+                                using \showthe\columnwidth
+        wf [float]:  width fraction in columnwidth units
+        hf [float]:  height fraction in columnwidth units.
+                        Set by default to golden ratio.
+
+    Returns:  [fig_width,fig_height]: that should be given to matplotlib
+    """
+    fig_width_pt = columnwidth*wf 
+    inches_per_pt = 1.0/72.27               # Convert pt to inch
+    fig_width = fig_width_pt*inches_per_pt  # width in inches
+    fig_height = fig_width*hf      # height in inches
+    return [fig_width, fig_height]

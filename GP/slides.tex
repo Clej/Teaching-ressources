@@ -1,12 +1,12 @@
 \documentclass[xcolor=svgnames, t]{beamer}
 
 \usepackage[utf8]{inputenc}
-\usepackage{booktabs, comment} 
+% \usepackage{booktabs, comment}
 \usepackage[absolute, overlay]{textpos}
 \useoutertheme{infolines} 
-\usepackage{csquotes}
+% \usepackage{csquotes}
 \usepackage{enumerate}
-%\usepackage{enumitem}
+\usepackage[french]{babel}
 % \usepackage[citestyle=authoryear,backend=bibtex,citetracker=true]{biblatex}
 % \bibliography{bibfile}
 
@@ -35,7 +35,6 @@
 \graphicspath{ {./images/} }
 
 \usepackage{textpos}
-\usetheme{Madrid}
 \definecolor{myuniversity}{RGB}{36, 42, 117}
 \definecolor{internationalblue}{RGB}{48, 157, 181}
 \definecolor{dodgerblue}{RGB}{91, 193, 213}
@@ -43,6 +42,8 @@
 \usepackage{tikz}
 
 \newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
+
+\usetheme{Madrid}
 
 \logo{\includegraphics[scale=0.25]{Thales.png}}
 \setbeamercolor{title in head/foot}{bg=internationalblue}
@@ -71,6 +72,11 @@ Thales Services Numériques,
 	\insertframenumber/\inserttotalframenumber
 }
 
+% \newtheorem{theorem}{Theorem}[section]
+% \newtheorem{corollary}{Corollary}[theorem]
+% \newtheorem{lemma}[theorem]{Lemma}
+
+
 \begin{document}
 
 %========== First frame ==================%
@@ -90,7 +96,7 @@ Thales Services Numériques,
 \section{Gaussien: vecteur vs. processus}
 \begin{frame}
   \frametitle{\secname}
-
+% 
   Loi Gaussienne unidiemensionnelle:
   \begin{equation*}
     y \sim \mathcal{N}(m, \sigma^2) = \frac{1}{\sqrt{2 \pi \sigma^2}} e^{-\frac{(y-m)^2}{2 \sigma^2}}
@@ -106,13 +112,12 @@ Thales Services Numériques,
   \begin{figure}
     \includegraphics[scale=0.4]{gaussian_1d.pdf}
   \end{figure}
-
 \end{frame}
 
 \begin{frame}
   \frametitle{\secname}
 
-  Loi Gaussienne multidimensionnelle (vecteur Gaussien): Distribution \coloredemph{jointe} d'un vecteur $d$-dimensionnel dont les \coloredemph{marginales} sont Gaussiennes (unidimensionnelles).
+  Loi Gaussienne multidimensionnelle (\coloredemph{vecteur} Gaussien): Distribution \coloredemph{jointe} des composantes d'un vecteur $d$-dimensionnel dont les \coloredemph{marginales} sont Gaussiennes (unidimensionnelles).
   \begin{equation*}
     \vectorx{Y} := [ y_1, \dots, y_d ]^\top  \sim \mathcal{N}(\vectorx{\mu} , \matrixx{\Sigma}) =  \frac{1}{\sqrt{(2 \pi)^d \det |\matrixx{\Sigma}|}} e^{-\frac{1}{2}(\vectorx{y - \mu})^\top \matrixx{\Sigma}^{-1} (\vectorx{y - \mu})}
   \end{equation*}
@@ -136,7 +141,8 @@ Thales Services Numériques,
     \left\{
       \begin{array}{ll}
         \Sigma_j  : \text{écart-type} \text{ de } y_j\\
-        \Sigma_{ij} : \text{covariance entre } y_i \text{ et } y_j
+        \Sigma_{ij} : \text{covariance entre les } \\
+        \text{marginales de } y_i \text{ et } y_j
       \end{array}
     \right.
   \end{equation*}
@@ -146,6 +152,7 @@ Thales Services Numériques,
 
 % d=2, low correlation
 \begin{frame}
+  % \frametitle{\secname}
   Cas $d=2$:
   \begin{equation*}
     \vectorx{\mu}
@@ -157,15 +164,15 @@ Thales Services Numériques,
     \quad
     \matrixx{\Sigma}
     =
-      \begin{bmatrix}
+      \begin{pmatrix}
         \Sigma_{1} & \Sigma_{12} \\
         \Sigma_{21} & \Sigma_{2}
-      \end{bmatrix}
+      \end{pmatrix}
     =
-      \begin{bmatrix}
+      \begin{pmatrix}
         1.5 & \color{red}\rho = -0.3 \\
         \color{red}\rho = -0.3 & 1.5
-      \end{bmatrix}
+      \end{pmatrix}
   \end{equation*}
 % 
   \begin{figure}
@@ -187,15 +194,15 @@ Thales Services Numériques,
     \quad
     \matrixx{\Sigma}
     =
-      \begin{bmatrix}
+      \begin{pmatrix}
         \Sigma_{1} & \Sigma_{12} \\
         \Sigma_{21} & \Sigma_{2}
-      \end{bmatrix}
+      \end{pmatrix}
     =
-      \begin{bmatrix}
+      \begin{pmatrix}
         1.5 & \color{red}\rho = 1.1 \\
         \color{red}\rho = 1.1 & 1.5
-      \end{bmatrix}
+      \end{pmatrix}
   \end{equation*}
 % 
   \begin{figure}
@@ -217,15 +224,15 @@ Thales Services Numériques,
     \quad
     \matrixx{\Sigma}
     =
-      \begin{bmatrix}
+      \begin{pmatrix}
         \Sigma_{1} & \Sigma_{12} \\
         \Sigma_{21} & \Sigma_{2}
-      \end{bmatrix}
+      \end{pmatrix}
     =
-      \begin{bmatrix}
+      \begin{pmatrix}
         1.5 & \color{red}\rho = 0 \\
         \color{red}\rho = 0 & 1.5
-      \end{bmatrix}
+      \end{pmatrix}
   \end{equation*}
 % 
   \begin{figure}
@@ -235,6 +242,7 @@ Thales Services Numériques,
 
 % d=5, high correlation: scatter and index plots
 \begin{frame}
+  % \frametitle{\secname}
   Cas $d=2$:
   %
   \begin{equation*}
@@ -248,13 +256,13 @@ Thales Services Numériques,
     \quad
     \matrixx{\Sigma}
     =
-    \begin{bmatrix}
+    \begin{pmatrix}
       1.5 & 0.99 & \color{lightgray}0.98 & \color{lightgray}0.96 & \color{lightgray}0.94 \\
       0.99 & 1.5 & \color{lightgray}0.99 & \color{lightgray}0.98 & \color{lightgray}0.96 \\
       \color{lightgray}0.98 & \color{lightgray}0.99 & \color{lightgray}1.5 & \color{lightgray}0.99 & \color{lightgray}0.98 \\
       \color{lightgray}0.96 & \color{lightgray}0.98 & \color{lightgray}0.99 & \color{lightgray}1.5 & \color{lightgray}0.99 \\
       \color{lightgray}0.94 & \color{lightgray}0.96 & \color{lightgray}0.98 & \color{lightgray}0.99 & \color{lightgray}1.5
-      \end{bmatrix}
+      \end{pmatrix}
   \end{equation*}
   %
   \begin{figure}[ht]
@@ -281,13 +289,13 @@ Thales Services Numériques,
     \quad
     \matrixx{\Sigma}
     =
-    \begin{bmatrix}
+    \begin{pmatrix}
       1.5 & 0.99 & 0.98 & 0.96 & 0.94 \\
       0.99 & 1.5 & 0.99 & 0.98 & 0.96 \\
       0.98 & 0.99 & 1.5 & 0.99 & 0.98 \\
       0.96 & 0.98 & 0.99 & 1.5 & 0.99 \\
       0.94 & 0.96 & 0.98 & 0.99 & 1.5
-      \end{bmatrix}
+      \end{pmatrix}
   \end{equation*}
   %
   Chaque courbe est un tirage de $\mathcal{N}(\vectorx{\mu} , \matrixx{\Sigma})$
@@ -313,7 +321,7 @@ Thales Services Numériques,
     \matrixx{\Sigma}
     =
     \scalemath{0.65}{
-      \begin{bmatrix}
+      \begin{pmatrix}
         1.5 & 0.998 & 0.993 & 0.986 & 0.975 & 0.962 & 0.946 & 0.927 & \cdots \\
         0.998 & 1.5 & 0.998 & 0.993 & 0.986 & 0.975 & 0.962 & 0.946 & \cdots \\
         0.993 & 0.998 & 1.5 & 0.998 & 0.993 & 0.986 & 0.975 & 0.962 & \cdots \\
@@ -323,7 +331,7 @@ Thales Services Numériques,
         0.946 & 0.962 & 0.975 & 0.986 & 0.993 & 0.998 & 1.5 & 0.998 & \cdots \\
         0.927 & 0.946 & 0.962 & 0.975 & 0.986 & 0.993 & 0.998 & 1.5   \\
         \hdots & \hdots & \hdots & \hdots & \hdots & \hdots & \hdots & \hdots & 1.5
-      \end{bmatrix}
+      \end{pmatrix}
     }
   \end{equation*}
   Chaque courbe est un tirage de $\mathcal{N}(\vectorx{\mu} , \matrixx{\Sigma})$
@@ -335,15 +343,219 @@ Thales Services Numériques,
 \end{frame}
 %
 
+% GP definition
 \begin{frame}
-  Cas $d=\infty$: chaque courbe est une \coloredemph{collection infinie} d'échantillons Gaussiens.
-  \begin{enumerate}
-    \item $\vectorx{\mu}$: vecteur de taille infinie
-    \item $\matrixx{\Sigma}$: une fonction de covariance
-  \end{enumerate}
+  \frametitle{\secname}
+  Cas $d=\infty$: chaque courbe est une \coloredemph{collection infinie} de valeurs, que l'on peut voir comme une fonction:
   %
-  % Définition d'un processus Gaussien
+  \begin{enumerate}
+    \item $\vectorx{\mu}$: vecteur de taille infinie $\Leftrightarrow$ fonction moyenne $\mathbb{E}(y(x)) = m(\vectorx{x})$
+    \item $\matrixx{\Sigma}$: matrice de taille infinie $\Leftrightarrow$  noyau de covariance 
+    $\mathbb{C}( y(\vectorx{x}), y(\vectorx{x^\prime}) ) = k(\vectorx{x}, \vectorx{x^{\prime}})$
+  \end{enumerate}
+  % 
+  \pause
+  % 
+  \begin{block}{Processus Gaussien $y(\vectorx{x}) \sim GP(m, k)$}
+    Un processus Gaussien (GP) est une distribution sur des \coloredemph{fonctions} aléatoires,
+   $y(\vectorx{x})$, telle que toute collection finie
+    $[ y(x_i), \dots, y(x_j), \dots y(x_k) ], \forall i,j,k$ suive une distribubtion Gaussienne. 
+    Les deux fonctions $m$ et $k$ définissent les paramètres du $GP$.
+  \end{block}
+  \pause
+  Exemple, $y(t): \mathbb{R} \to \mathbb{R}$ (série temporelle), \coloredemph{n'importe qu'elle discrétisation} de $y$ doit
+   former un vecteur Gaussien, en prenant par ex $2$ entrées de $y$:
+  \begin{equation*}
+    y(\vectorx{x}) \sim GP(m, k) \implies
+    y([t_i, t_j]) \sim \mathcal{N} (
+      % mu
+      \begin{pmatrix}
+        \mu_i \\
+        \mu_j 
+      \end{pmatrix},
+      % sigma
+      \begin{pmatrix}
+        \Sigma_{i}^2 & \Sigma_{ij} \\
+        \Sigma_{ij} & \Sigma_{j}^2
+      \end{pmatrix}
+      )
+  \end{equation*}
+  %
 \end{frame}
+
+% informal details
+\begin{frame}
+  \frametitle{\secname}
+  \begin{itemize}
+    \item On impose souvent une forme simple sur $\mathbb{E}(y(x)) = m(x)$ 
+    comme: $\vectorx{\beta}^\top \vectorx{x}$, $\vectorx{0}$
+    \pause
+    \item $k(\vectorx{x}, \vectorx{x^{\prime}}) = \mathbb{C}( y(\vectorx{x}), y(\vectorx{x^\prime}) )$
+     représente la \coloredemph{similarité de $y$} entre deux entrées $\vectorx{x}$ et $\vectorx{x}^\prime$,
+     donc doit générer une matrice de covariance valide
+     \footnote{
+      $\sum_{i,j}^{n} a_i a_j k(\vectorx{x}_i, \vectorx{x}_j) \geq 0, \forall \vectorx{a} = [a_1, \dots, a_n]$
+    }
+    \pause
+    \item $y: \mathcal{X} \to \mathcal{Y}$ est une \coloredemph{fonction}: il suffit de bien choisir $\mathcal{X}$ et $\mathcal{Y}$
+    \begin{itemize}
+      \item $\mathcal{X} = \mathbb{R}^{+}$ et $\mathcal{Y} = \mathbb{R}$ $\implies$
+      $y$ = \coloredemph{série temporelle}
+      \pause
+      \item $\mathcal{X} = [a, b] \times [c, d]$ et  $\mathcal{Y} = \mathbb{R}$ $\implies$
+      $y$ = \coloredemph{champ spatial} (météo, hydro, etc)
+      \pause
+      \item $\mathcal{X} = [a, b] \times [c, d] \times \mathbb{R}^{+}$ et $\mathcal{Y} = \mathbb{R}$ $\implies$
+      $y$ = \coloredemph{série temporelle d'images}
+      \pause
+      \item $\mathcal{X} = \mathbb{R}^{d}$ et $\mathcal{Y} = \{1 \dots K \}$ $\implies$
+      $y$ = \coloredemph{classificateur} d'images/pixels (ex: segmentation, catégorisation)
+      \item \dots 
+    \end{itemize}
+    \pause
+    \item $k$ défini \coloredemph{implicitement} les propriétés fonctionnelles de $y$
+    \footnote{
+      C-à-d être un noyau reproduisant d'un espace de Hilbert:
+      $y(x_0) = \sum_{i=1}^{\infty} y(x_i) k(x_i, x_0)$ 
+    }
+    \pause
+    \item Le nerf de la guerre est dans le kernel (noyau)
+  \end{itemize}
+  % 
+\end{frame}
+
+% Examples of kernel functions
+\begin{frame}
+  \frametitle{\secname}
+  \begin{itemize}
+    \item Quelques exemples de $GP$ avec $\mathcal{X} = \mathbb{R}$ et $\mathcal{Y} = \mathbb{R}$
+    \item Série temporelle
+    \item Bonne manière de s'approprier les noyaux (et dépasser la théorie...)
+  \end{itemize}
+  
+\end{frame}
+
+
+% Exponential quadratic
+\begin{frame}
+  \frametitle{\secname}
+  
+  % 
+  \begin{itemize}
+    \item kernel exponentiel quadratique (aka "Radial basis", "Gaussian", "Heat" kernel):
+    $k (t, t^\prime) = e^{- \frac{(t - t^\prime)^2}{2 \ell^2} }$
+  \end{itemize}
+  %
+  \begin{figure}
+    \includegraphics{10_gp_time_SquaredExponentialKernel_2.00.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{\secname}
+
+  % 
+  \begin{itemize}
+    \item Exponentiel quadratique (aka "Radial basis", "Gaussian", "Heat" kernel):
+    $k (t, t^\prime) = e^{- \frac{(t - t^\prime)^2}{2 \ell^2} }$
+  \end{itemize}
+  %
+  \begin{figure}
+    \includegraphics{10_gp_time_SquaredExponentialKernel_1.00.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{\secname}
+  
+  % 
+  \begin{itemize}
+    \item Exponentiel quadratique (aka "Radial basis", "Gaussian", "Heat" kernel):
+    $k (t, t^\prime) = e^{- \frac{(t - t^\prime)^2}{2 \ell^2} }$
+    \item $GP (0, k)$ génères des $y$ infiniment différentiables par rapport à $t$
+    \item \implies $\ell$ contrôle le lissé (ici au sens oscillatoir) des générées
+  \end{itemize}
+  %
+  \begin{figure}
+    \includegraphics{10_gp_time_SquaredExponentialKernel_0.10.pdf}
+  \end{figure}
+\end{frame}
+
+% Matern kernel
+\begin{frame}
+  \frametitle{\secname}
+  
+  % 
+  \begin{itemize}
+    \item kernel de Matérn:
+    $k (t, t^\prime) = ( 1 + \sqrt{\frac{3 |t - t^\prime|}{\ell} } ) e^{-\sqrt{\frac{3 |t - t^\prime|}{\ell} }}$
+  \end{itemize}
+  %
+  \begin{figure}
+    \includegraphics{10_gp_time_MaternKernel_2.00.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{\secname}
+  
+  % 
+  \begin{itemize}
+    \item kernel de Matérn:
+    $k (t, t^\prime) = ( 1 + \sqrt{\frac{3 |t - t^\prime|}{\ell} } ) e^{-\sqrt{\frac{3 |t - t^\prime|}{\ell} }}$
+  \end{itemize}
+  %
+  \begin{figure}
+    \includegraphics{10_gp_time_MaternKernel_1.00.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{\secname}
+  
+  % 
+  \begin{itemize}
+    \item kernel de Matérn:
+    $k (t, t^\prime) = ( 1 + \sqrt{\frac{3 |t - t^\prime|}{\ell} } ) e^{-\sqrt{\frac{3 |t - t^\prime|}{\ell} }}$
+    \item Génère des $y$ différentiables une seule fois par rapport à $t$
+    \item $\ell$: même interprétation que le kernel exponentiel quadratique
+  \end{itemize}
+  %
+  \begin{figure}
+    \includegraphics{10_gp_time_MaternKernel_0.10.pdf}
+  \end{figure}
+\end{frame}
+
+% Locally periodic
+\begin{frame}
+  \frametitle{\secname}
+  
+  % 
+  \begin{itemize}
+    \item kernel locallement-périodique et exponentiel:
+    $k (t, t^\prime) = e^{- \frac{2 \sin^2(\pi (t - t^\prime) / p)}{\ell^2}} e^{- \frac{(t - t^\prime)^2}{2 \ell^2}} $
+  \end{itemize}
+  %
+  \begin{figure}
+    \includegraphics{10_gp_time_LocallyPeriodicKernel_1.25.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{\secname}
+  
+  % 
+  \begin{itemize}
+    \item kernel locallement-périodique et exponentiel:
+    $k (t, t^\prime) = e^{- \frac{2 \sin^2(\pi (t - t^\prime) / p)}{\ell^2}} e^{- \frac{(t - t^\prime)^2}{2 \ell^2}} $
+    \item Génère des $y$ infiniment différentiables et quasi-périodiques
+  \end{itemize}
+  %
+  \begin{figure}
+    \includegraphics{10_gp_time_LocallyPeriodicKernel_0.50.pdf}
+  \end{figure}
+\end{frame}
+
 %========== Motivations ==================%
 % \section{Motivations}
 % Où est-ce rencontre-t-on des processus stochastiques ?
