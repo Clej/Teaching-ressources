@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import multivariate_normal, norm
 
 np.random.seed(seed=3004666)
-n = 10**4
+n = 10**3
 d = 2
 
 #----------------------#
@@ -28,6 +28,18 @@ gauss_2d_anis_low = multivariate_normal(mean=mu, cov=sigma_low)
 gauss_2d_anis_high = multivariate_normal(mean=mu, cov=sigma_high)
 gauss_2d_iso = multivariate_normal(mean=mu, cov=np.eye(d)*variances[0])
 
+def get_conditional(mvn_2d, cond=0.0):
+    """Return univ conditional distrib y2|y1."""
+
+    from math import sqrt
+
+    mu, cov = mvn_2d.mean, mvn_2d.cov
+    # mean of second variable given the first
+    mu_10 = mu[1] + cov[0, 1] * (cond - mu[0]) / cov[0, 0]
+    var_10 = cov[1, 1] - (cov[0, 1]**2 / cov[0, 0])
+
+    return norm(loc=mu_10, scale=sqrt(var_10))
+
 #----------------------#
 #     Plot functions
 #----------------------#
@@ -37,7 +49,7 @@ t = np.linspace(-6.0, 6.0, num=n)
 
 def plot_pdf_joint(pdf_fun, ax, fig):
     """Plot (full) 2d density."""
-
+    pass
 
 def plot_pdf_marginals(ax_x, ax_y, fig):
     """Plot marginal densities."""
@@ -49,7 +61,7 @@ def plot_pdf_marginals(ax_x, ax_y, fig):
 
 def confidence_ellipse(mu, cov, ax, n_std=3.0, facecolor='none', **kwargs):
     """
-    Create a plot of the covariance confidence ellipse of *x* and *y*.
+    Create a plot of the covariance confidence ellipse of x and y.
     """
 
     from matplotlib.patches import Ellipse
@@ -100,6 +112,8 @@ def confidence_ellipse(mu, cov, ax, n_std=3.0, facecolor='none', **kwargs):
 #----------------------#
 #     Main loop
 #----------------------#
+fontsize = 'x-small'
+
 for rho_str, gauss_2d in zip(
     ['rho_high', 'rho_low', 'rho_null'],
     [gauss_2d_anis_high, gauss_2d_anis_low, gauss_2d_iso]
@@ -108,7 +122,12 @@ for rho_str, gauss_2d in zip(
     # sampling
     Y = gauss_2d.rvs(size=n)
     mu, cov = gauss_2d.mean, gauss_2d.cov
+    # this is covariance, not correlation
     rho = gauss_2d.cov[0, 1]
+    # generate wrt y2|y1
+    given_y1_val = 2.0
+    gauss_conditional = get_conditional(gauss_2d, cond=given_y1_val)
+    y2_given_y1 = gauss_conditional.rvs(size=n)
 
     # plot sampled data
     fig, ax_scatt, ax_x, ax_y = scatter_hist(
@@ -131,9 +150,51 @@ for rho_str, gauss_2d in zip(
     # legend
     ax_scatt.set_xlim((-7.0, 7.0))
     ax_scatt.set_ylim((-7.0, 7.0))
-    ax_scatt.text(x=-5.0, y=4, s=rf"$\mu = {mu}^\top$", fontsize='x-large', color='C0')
-    ax_scatt.text(x=-5.0, y=5, s=rf"$\rho = {rho}$", fontsize='x-large', color='red')
-    ax_scatt.text(x=-5.0, y=6, s=rf"diag($\Sigma) = ${np.diag(cov)}", fontsize='x-large', color='blue')
+    mu = [int(m) for m in mu]
+    ax_scatt.text(
+        x=-5.0, y=4,
+        fontsize=fontsize,
+        s=rf"$\mu = {mu}^\top$", color='C0')
+    ax_scatt.text(
+        x=-5.0, y=5,
+        fontsize=fontsize,
+        s=rf"$\rho = {rho}$", color='red')
+    ax_scatt.text(
+        x=-5.0, y=6,
+        fontsize=fontsize,
+        s=rf"diag($\Sigma) = ${np.diag(cov)}", color='blue')
 
     # fig_anis.legend(loc='upper left')
-    fig.savefig(f'./images/gaussian_2d_{rho_str}.pdf')
+    fig.savefig(
+        f'./images/gaussian_2d_{rho_str}.pdf',
+        bbox_inches='tight',
+        pad_inches = 0.01
+    )
+
+    # add conditional distribution y2|y1
+    ax_y.hist(
+        y2_given_y1,
+        orientation='horizontal',
+        bins='fd',
+        density=True,
+        color='black', alpha=0.25
+    )
+    ax_y.plot(
+        gauss_conditional.pdf(t),
+        t,
+        color='black', linestyle='dashed'
+    )
+    ax_scatt.axvline(x=given_y1_val, color='black', linestyle='dashed')
+    ax_scatt.text(
+        x=given_y1_val + 1e-1, y=5,
+        fontsize=fontsize,
+        s=rf"$y_1 = {given_y1_val}$", color='black')
+
+    ax_y.set_xlim(0, 0.6)
+    ax_x.set_ylim(0, 0.6)
+
+    fig.savefig(
+        f'./images/gaussian_2d_{rho_str}_with_conditional.pdf',
+        bbox_inches='tight',
+        pad_inches = 0.01
+    )

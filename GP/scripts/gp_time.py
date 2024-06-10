@@ -1,5 +1,5 @@
 """
-Simulate 1D random fields (time series) with Gaussian priors with MOGPTK.
+Plot 1D random fields (time series) with Gaussian priors with MOGPTK.
 Help to understand Gaussian prior structure and kernel functions.
 """
 
@@ -8,7 +8,8 @@ from matplotlib import pyplot as plt
 from mogptk import Model as Model_mogptk
 from mogptk import Exact
 from mogptk import DataSet
-from mogptk.gpr.singleoutput import SquaredExponentialKernel, LocallyPeriodicKernel, MaternKernel
+from mogptk.gpr.singleoutput import SquaredExponentialKernel,\
+    MaternKernel, PeriodicKernel, SincKernel, SpectralMixtureKernel
 from mogptk.gpr.kernel import MulKernel, AddKernel
 from mogptk.gpr.mean import LinearMean, ConstantMean
 from torch import manual_seed
@@ -61,11 +62,17 @@ for idx, l in enumerate(per):
     # kernel = MaternKernel(input_dims=1, active_dims=[0], nu=1.5)
     # kernel.lengthscale.assign(value=[l], train=False)
 
-    kernel = LocallyPeriodicKernel(input_dims=1, active_dims=[0])
-    kernel.period.assign(value=[l], train=False)
+    # kernel = PeriodicKernel(input_dims=1, active_dims=[0])
+    # kernel.period.assign(value=[l], train=False)
 
     # kernel = SquaredExponentialKernel(input_dims=1, active_dims=[0])
     # kernel.lengthscale.assign(value=[l], train=False)
+
+    # kernel = SpectralMixtureKernel(input_dims=1, Q=2)
+
+    kernel = SincKernel(input_dims=1, active_dims=[0])
+    kernel.bandwidth.assign(value=[l], train=False)
+
 
     model = Model_mogptk(mogptk_dataset, inference=Exact(), kernel=kernel, mean=ConstantMean())
     model.gpr.likelihood.scale.assign(value=1.0, train=False)
@@ -78,6 +85,7 @@ for idx, l in enumerate(per):
     #-------------------#
     #   Plot
     #-------------------#
+    # GP samples
     fig, ax = plt.subplots(
         1, 1,
         sharey=True,

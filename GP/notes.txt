@@ -5,6 +5,11 @@ Plan:
     - Construction Nd ... infinite dimensional
     - Définition
 
+- Utilisation
+    - Choix du kernel, vraissemblance
+    - Estimation a.k.a "apprentissage"
+    - Prédiction, évaluation
+
 - Motivations:
     - Où utiliser des processus Gaussiens ? Données et modèles
     - probabiliste (uncertainty) => génératif
@@ -12,17 +17,12 @@ Plan:
     - Non-paramétrique
     - Tractabilité mathématique: addition, conditionnement, opérateur linéaire, lien erreur quadratique
 
-- Utilisation
-    - Choix du kernel, vraissemblance
-    - Estimation a.k.a "apprentissage"
-    - Prédiction, évaluation
-
 - Application
     - Séries temporelles
     - Forecasting,
     - Valeurs manquantes
     - Modélisation
 
-
 - Processus Gaussien pour les cas non-Gaussiens
 
+/!\ Citer références classiques: Rassmussen

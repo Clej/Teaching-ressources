@@ -7,6 +7,7 @@
 % \usepackage{csquotes}
 \usepackage{enumerate}
 \usepackage[french]{babel}
+\usepackage{xcolor}
 % \usepackage[citestyle=authoryear,backend=bibtex,citetracker=true]{biblatex}
 % \bibliography{bibfile}
 
@@ -30,18 +31,16 @@
 \newcommand{\argmax}{\mathop{\mathrm{arg\,max}}}
 \newcommand{\argminx}[1]{\arg\min_{#1}}
 \newcommand{\dotprod}[2]{\langle #1, #2 \rangle}
+\newcommand{\scalemath}[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
 
 % Images location
 \graphicspath{ {./images/} }
 
-\usepackage{textpos}
 \definecolor{myuniversity}{RGB}{36, 42, 117}
 \definecolor{internationalblue}{RGB}{48, 157, 181}
 \definecolor{dodgerblue}{RGB}{91, 193, 213}
 \usecolortheme[named=myuniversity]{structure}
 \usepackage{tikz}
-
-\newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
 
 \usetheme{Madrid}
 
@@ -76,7 +75,6 @@ Thales Services Numériques,
 % \newtheorem{corollary}{Corollary}[theorem]
 % \newtheorem{lemma}[theorem]{Lemma}
 
-
 \begin{document}
 
 %========== First frame ==================%
@@ -84,20 +82,21 @@ Thales Services Numériques,
 \frame{\titlepage}
 
 %========== ToC ==========================%
-% \AtBeginSection[]
+\AtBeginSubsection[]
 {
   \begin{frame}
     \frametitle{Plan}
-    \tableofcontents[currentsection]
+    \tableofcontents[currentsubsection]
   \end{frame}
 }
 
 %========== Gaussianity ==================%
 \section{Gaussien: vecteur vs. processus}
+\subsection{Construction d'un $GP$}
 \begin{frame}
   \frametitle{\secname}
 % 
-  Loi Gaussienne unidiemensionnelle:
+  Loi Gaussienne unidimensionnelle:
   \begin{equation*}
     y \sim \mathcal{N}(m, \sigma^2) = \frac{1}{\sqrt{2 \pi \sigma^2}} e^{-\frac{(y-m)^2}{2 \sigma^2}}
   \end{equation*}
@@ -176,7 +175,7 @@ Thales Services Numériques,
   \end{equation*}
 % 
   \begin{figure}
-    \includegraphics[scale=0.4]{gaussian_2d_rho_low.pdf}
+    \includegraphics{gaussian_2d_rho_low.pdf}
   \end{figure}
 \end{frame}
 
@@ -206,7 +205,7 @@ Thales Services Numériques,
   \end{equation*}
 % 
   \begin{figure}
-    \includegraphics[scale=0.4]{gaussian_2d_rho_high.pdf}
+    \includegraphics{gaussian_2d_rho_high.pdf}
   \end{figure}
 \end{frame}
 
@@ -236,7 +235,7 @@ Thales Services Numériques,
   \end{equation*}
 % 
   \begin{figure}
-    \includegraphics[scale=0.4]{gaussian_2d_rho_null.pdf}
+    \includegraphics{gaussian_2d_rho_null.pdf}
   \end{figure}
 \end{frame}
 
@@ -357,10 +356,10 @@ Thales Services Numériques,
   \pause
   % 
   \begin{block}{Processus Gaussien $y(\vectorx{x}) \sim GP(m, k)$}
-    Un processus Gaussien (GP) est une distribution sur des \coloredemph{fonctions} aléatoires,
-   $y(\vectorx{x})$, telle que toute collection finie
-    $[ y(x_i), \dots, y(x_j), \dots y(x_k) ], \forall i,j,k$ suive une distribubtion Gaussienne. 
-    Les deux fonctions $m$ et $k$ définissent les paramètres du $GP$.
+    Un processus Gaussien (GP) est une distribution de probabilités sur un espace de \coloredemph{fonctions},
+    $y(\vectorx{x}): \mathcal{X} \to \mathcal{Y}$, telle que toute collection finie
+    $[ y(x_i), \dots, y(x_j), \dots y(x_k) ], \forall i,j,k$ forme un vecteur Gaussien. 
+    % Les deux fonctions $m$ et $k$ définissent les paramètres du $GP$.
   \end{block}
   \pause
   Exemple, $y(t): \mathbb{R} \to \mathbb{R}$ (série temporelle), \coloredemph{n'importe qu'elle discrétisation} de $y$ doit
@@ -390,13 +389,6 @@ Thales Services Numériques,
     \item On impose souvent une forme simple sur $\mathbb{E}(y(x)) = m(x)$ 
     comme: $\vectorx{\beta}^\top \vectorx{x}$, $\vectorx{0}$
     \pause
-    \item $k(\vectorx{x}, \vectorx{x^{\prime}}) = \mathbb{C}( y(\vectorx{x}), y(\vectorx{x^\prime}) )$
-     représente la \coloredemph{similarité de $y$} entre deux entrées $\vectorx{x}$ et $\vectorx{x}^\prime$,
-     donc doit générer une matrice de covariance valide
-     \footnote{
-      $\sum_{i,j}^{n} a_i a_j k(\vectorx{x}_i, \vectorx{x}_j) \geq 0, \forall \vectorx{a} = [a_1, \dots, a_n]$
-    }
-    \pause
     \item $y: \mathcal{X} \to \mathcal{Y}$ est une \coloredemph{fonction}: il suffit de bien choisir $\mathcal{X}$ et $\mathcal{Y}$
     \begin{itemize}
       \item $\mathcal{X} = \mathbb{R}^{+}$ et $\mathcal{Y} = \mathbb{R}$ $\implies$
@@ -410,8 +402,24 @@ Thales Services Numériques,
       \pause
       \item $\mathcal{X} = \mathbb{R}^{d}$ et $\mathcal{Y} = \{1 \dots K \}$ $\implies$
       $y$ = \coloredemph{classificateur} d'images/pixels (ex: segmentation, catégorisation)
-      \item \dots 
+      \item $\mathcal{X}$ et $\mathcal{Y}$ peuvent être des espaces de graphes
+      \item \dots etc, etc, etc.
     \end{itemize}
+  \end{itemize}
+  % 
+\end{frame}
+
+\subsection{Le kernel}
+\begin{frame}
+  \frametitle{\secname}
+  % 
+  \begin{itemize}
+    \item $k(\vectorx{x}, \vectorx{x^{\prime}}) = \mathbb{C}( y(\vectorx{x}), y(\vectorx{x^\prime}) )$
+     représente la \coloredemph{similarité de $y$} entre deux entrées $\vectorx{x}$ et $\vectorx{x}^\prime$,
+     donc doit générer une matrice de covariance valide
+     \footnote{
+      $\sum_{i,j}^{n} a_i a_j k(\vectorx{x}_i, \vectorx{x}_j) \geq 0, \forall \vectorx{a} = [a_1, \dots, a_n]$
+    }
     \pause
     \item $k$ défini \coloredemph{implicitement} les propriétés fonctionnelles de $y$
     \footnote{
@@ -419,30 +427,28 @@ Thales Services Numériques,
       $y(x_0) = \sum_{i=1}^{\infty} y(x_i) k(x_i, x_0)$ 
     }
     \pause
-    \item Le nerf de la guerre est dans le kernel (noyau)
+    \item Un kernel est dépend d'un vecteur \coloredemph{d'hyperparamètres} $\vectorx{\theta}$
+    \pause
+    \item Et donc le nerf d'un $GP$ est essentiellement dans son kernel (noyau)
   \end{itemize}
-  % 
 \end{frame}
 
 % Examples of kernel functions
 \begin{frame}
   \frametitle{\secname}
   \begin{itemize}
-    \item Quelques exemples de $GP$ avec $\mathcal{X} = \mathbb{R}$ et $\mathcal{Y} = \mathbb{R}$
-    \item Série temporelle
-    \item Bonne manière de s'approprier les noyaux (et dépasser la théorie...)
-  \end{itemize}
-  
+    \item Quelques exemples de $GP(0, k)$ défini sur $\mathcal{X} = \mathbb{R}^+$ et $\mathcal{Y} = \mathbb{R}$
+    (série temporelle)
+    \item kernel de série temporelle $\leftrightarrow$ fonction d'autocovariance
+    \item Visualiser: bonne manière de comprendre un kernel (au delà des considérations théoriques...)
+  \end{itemize}  
 \end{frame}
-
 
 % Exponential quadratic
 \begin{frame}
   \frametitle{\secname}
-  
-  % 
   \begin{itemize}
-    \item kernel exponentiel quadratique (aka "Radial basis", "Gaussian", "Heat" kernel):
+    \item Exponentiel quadratique (aka "Radial basis", "Gaussian", "Heat" kernel):
     $k (t, t^\prime) = e^{- \frac{(t - t^\prime)^2}{2 \ell^2} }$
   \end{itemize}
   %
@@ -453,7 +459,6 @@ Thales Services Numériques,
 
 \begin{frame}
   \frametitle{\secname}
-
   % 
   \begin{itemize}
     \item Exponentiel quadratique (aka "Radial basis", "Gaussian", "Heat" kernel):
@@ -467,7 +472,6 @@ Thales Services Numériques,
 
 \begin{frame}
   \frametitle{\secname}
-  
   % 
   \begin{itemize}
     \item Exponentiel quadratique (aka "Radial basis", "Gaussian", "Heat" kernel):
@@ -484,7 +488,6 @@ Thales Services Numériques,
 % Matern kernel
 \begin{frame}
   \frametitle{\secname}
-  
   % 
   \begin{itemize}
     \item kernel de Matérn:
@@ -498,7 +501,6 @@ Thales Services Numériques,
 
 \begin{frame}
   \frametitle{\secname}
-  
   % 
   \begin{itemize}
     \item kernel de Matérn:
@@ -512,7 +514,6 @@ Thales Services Numériques,
 
 \begin{frame}
   \frametitle{\secname}
-  
   % 
   \begin{itemize}
     \item kernel de Matérn:
@@ -529,37 +530,245 @@ Thales Services Numériques,
 % Locally periodic
 \begin{frame}
   \frametitle{\secname}
-  
   % 
   \begin{itemize}
-    \item kernel locallement-périodique et exponentiel:
-    $k (t, t^\prime) = e^{- \frac{2 \sin^2(\pi (t - t^\prime) / p)}{\ell^2}} e^{- \frac{(t - t^\prime)^2}{2 \ell^2}} $
+    \item kernel locallement-périodique:
+    $k (t, t^\prime) = e^{- \frac{2 \sin^2(\pi (t - t^\prime) / p)}{\ell^2}}$ %$e^{- \frac{(t - t^\prime)^2}{2 \ell^2}} $
   \end{itemize}
   %
   \begin{figure}
-    \includegraphics{10_gp_time_LocallyPeriodicKernel_1.25.pdf}
+    \includegraphics{10_gp_time_PeriodicKernel_1.25.pdf}
   \end{figure}
 \end{frame}
 
 \begin{frame}
   \frametitle{\secname}
-  
   % 
   \begin{itemize}
-    \item kernel locallement-périodique et exponentiel:
-    $k (t, t^\prime) = e^{- \frac{2 \sin^2(\pi (t - t^\prime) / p)}{\ell^2}} e^{- \frac{(t - t^\prime)^2}{2 \ell^2}} $
-    \item Génère des $y$ infiniment différentiables et quasi-périodiques
+    \item kernel locallement-périodique:
+    $k (t, t^\prime) = e^{- \frac{2 \sin^2(\pi (t - t^\prime) / p)}{\ell^2}}$ %$e^{- \frac{(t - t^\prime)^2}{2 \ell^2}} $
+    \item Génère des $y$ quasi-périodiques
   \end{itemize}
   %
   \begin{figure}
-    \includegraphics{10_gp_time_LocallyPeriodicKernel_0.50.pdf}
+    \includegraphics{10_gp_time_PeriodicKernel_0.50.pdf}
   \end{figure}
 \end{frame}
 
-%========== Motivations ==================%
-% \section{Motivations}
-% Où est-ce rencontre-t-on des processus stochastiques ?
-% Gaussiens ?
+% 
+\begin{frame}
+  \frametitle{\secname}
+  %
+  \begin{itemize}
+    \item Aussi, des kernels dans le domaine fréquentiel (Fourier)
+    \footnote{ex: $\sum_{q=0}^Q \sigma_q^2 e^{-2 \pi^2 \Sigma_q (t-t^\prime)^2} \cos(2\pi \mu_q (t-t^\prime))$}
+  %  
+  \pause
+    \item Une famille standard est celle des \coloredemph{kernels stationnaires}. 
+    $k(t, t^\prime)$ ne dépend que de $t - t^\prime$ (ex: tous les kernels précédents):
+  \end{itemize}
+  %
+  \begin{figure}
+    \includegraphics[scale=0.80]{autocov_gp_1D.pdf}
+  \end{figure}
+\end{frame}
 
-\section[short]{}
+\begin{frame}
+  \frametitle{\secname}
+  %
+  \begin{itemize}
+    \item Fléxibilité des kernels: $k_1 + k_2$, $k_1 \times k_2$, $g(t) \times k$ ($g$ est déterministe)
+  %
+  \pause
+    \item Depuis quelques années: construction de kernels par des deep-nets (deep-kernel)
+  % 
+  \pause
+    \item Plus récemment: construction du kernel à  partir d'équations différentielles
+  \end{itemize}
+\end{frame}
+
+%========== Fitting a GP ==================%
+\section{Utilisation}
+
+% Gaussian Bayesian rule
+\subsection{Règle de Bayes}
+\begin{frame}
+  \frametitle{\secname}
+\begin{itemize}
+  \item<1-> Règle de Bayes: 
+  $p(y_2| y_1)
+  = \frac{p(y_1, y_2)}{p(y_1)}
+  = \frac{p(y_1 | y_2) p(y_2)}{p(y_1)}
+  $%
+  \item<2-> $  \vectorx{y} = [y_1, y_2]^\top \sim \mathcal{N} (
+    \begin{pmatrix}
+      \mu_1 \\
+      \mu_2
+    \end{pmatrix},
+      \begin{pmatrix}
+        \Sigma_{1} & \Sigma_{12} \\
+        \Sigma_{12} & \Sigma_{2}
+      \end{pmatrix}
+  )$%
+  \item<3-> $
+  p(y_2 | y_1 = u) = \mathcal{N} (
+    \mu_2 \coloredemph{+ \Sigma_{12} \Sigma_1^{-1} (u - \mu_1)}
+    ,
+    \Sigma_2 \coloredemph{- \Sigma_{12}^2 \Sigma_1^{-1}}
+  )$%
+\end{itemize}
+\begin{figure}
+\only<4>{\includegraphics{gaussian_2d_rho_null_with_conditional.pdf}}%
+\only<5>{\includegraphics{gaussian_2d_rho_low_with_conditional.pdf}}%
+\only<6>{\includegraphics{gaussian_2d_rho_high_with_conditional.pdf}}%
+\end{figure}
+\end{frame}
+%
+\subsection{prédiction = data $\times$ hypothèse}
+\begin{frame}
+  \begin{itemize}
+    \item<1-> Data: $\{y_i, x_i\}_{1 \leq i \leq n}$
+    \item<2-> Modèle de prédiction: $\tilde{y}(x_0) = f(x_0) + \epsilon$
+    % \item Modèle des données d'entraînement: $y_i = f(x_i) + \epsilon$
+    % \pause
+    \item<3-> Hypothèse: $f$ est un processus Gaussien
+    \item<4-> $prédiction = hypothèse + data + bruit$
+    \item<5-> But: aprendre $f$ et prédire $\tilde{y}(x_0)$
+    \item<6-> Règle de Bayes:
+      \begin{equation*}
+        \begin{split}
+        % informal way
+        \only<7>{
+          p(hypothèse | data)
+          & = \frac{
+            p(data, hypothèse)
+          }{
+            p(data)
+          } \\
+          & =
+          \frac{
+            \overbrace{p(data | hypothèse)}^{\textcolor{red}{likelihood}}
+            \overbrace{p(hypothèse)}^{\textcolor{red}{a priori}}
+          }{
+            p(data)
+          }
+        }
+        % formal way
+        \only<8>{
+          p(f | X, y)
+        & =
+        }
+        \end{split}
+      \end{equation*}
+  \end{itemize}
+\end{frame}
+
+\subsection{GP: fondamentalement Bayésien}
+% Color: current +/- prior with underbrace
+\begin{frame}
+  \frametitle{\secname}
+\begin{itemize}
+  \item Règle de Bayes étendue aux $GP$: $y \sim GP(m_y, k_y)$ et $f \sim GP(0, k_f)$
+  \pause
+    \begin{equation*}
+      y | f(x_1) \dots f(x_n) \sim GP(m^*, k^*) \\
+    \pause
+      \matrixx{K}_{fn}
+      =
+      \scalemath{0.80}{
+        \coloredemph{
+      \begin{pmatrix}
+        k_f(x_1, x_1) & \dots & k_f(x_1, x_n) \\
+        \vdots      & \ddots& \vdots          \\
+        k_f(x_n, x_1) & \dots & k_f(x_n, x_n)
+      \end{pmatrix}}}\\
+      \pause
+      % posterior mean
+      m^* (u) = m_y (u) + 
+      \pause
+      \scalemath{0.80}{
+      \coloredemph{
+        [k_y(u, x_1), \dots, k_y(u, x_n)]
+      \matrixx{K}_{fn}^{-1}
+      }%
+      [f(x_1), \dots, f(x_n)]^\top%
+      }\\
+      \pause
+      % posterior covariance
+      k^* (u, u^\prime) = k_y (u, u^\prime) -
+      \pause
+      \scalemath{0.80}{
+      \coloredemph{
+        [k_y(u, x_1), \dots, k_y(u, x_n)]
+      \matrixx{K}_{fn}^{-1}
+      }
+      [k_y(u^\prime, x_1), \dots, k_y(u^\prime, x_n)]^\top
+      }%
+    \end{equation*}
+\end{itemize}
+\end{frame}
+
+%========== Motivations ==================%
+\section{Motivations}
+\subsection{Tractabilité mathématique}
+
+% Mathematical properties
+\begin{frame}
+  \frametitle{\secname}
+$y_1 \sim GP$, $y_2 \sim GP$
+\begin{itemize}
+  \pause
+  \item Somme: $y_1 + y_2 \sim GP$
+  %
+  \pause
+  \item Opérateur linéaire $\mathcal{L}$ (gradient, $\int$, eq-diff linéaire, etc.):
+  $\mathcal{L}y_1 \sim GP$
+  % 
+  \item Bayésien $\implies$ probabiliste: accès à l'incertitude de prédiction
+  \pause
+  \item Conditionnement Bayésien: $y_1 | y_2 \sim GP$ (\coloredemph{important}, détails plus tard)
+  % 
+  \pause
+  \item Connaissant uniquement moyenne et covariance de $\vectorx{u}$ et $\vectorx{v}$,
+  on montre que la meilleure prédiction (en moyenne) est Gaussienne (maximum d'entropie).
+\end{itemize}
+\end{frame}
+
+% Non-parametric
+\subsection{Non-paramétrique}
+\begin{frame}
+  \frametitle{\secname}
+    \begin{itemize}
+    \item Modèle \coloredemph{paramétrique}: modèle = des paramètres
+    \item Les données d'entraînement \coloredemph{conditionnent} les paramètres qui conditionnent eux-mêmes l'inférence (lien indirect)
+    \pause
+    \item Ex: régression linéaire, réseau de neurones (poids), K-means, RF
+    \pause
+    \item Modèle \coloredemph{non-paramétrique}: modèle = des données
+    \item Les données d'entraînement \coloredemph{conditionnent} l'inférence (lien direct)
+    \pause
+    \item Ex: SVM, k-NN, \coloredemph{GP} ($\coloredemph{\matrixx{K}_{fn}^{-1}}$)
+    \pause
+    %
+    \item Avantages du non-paramétrique:
+      \begin{enumerate}
+        \item apprentissage "direct" de la distribution des observations
+        \item théorie: $n \to \infty$: le modèle se trompe de moins en moins (pas toujours le cas du paramétrique)
+        \item inférence Gaussienne optimale\footnote{à partir de moyenne et covariance uniquement.}
+      \end{enumerate}
+    \pause
+    %
+    Inconvénivents du non-paramétrique:
+      \begin{enumerate}
+        \item risque d'overfit plus important
+        \item variance de prédiction sensible aux hyperparamètres du kernel
+        \item inférence plus coûteuse en général
+      \end{enumerate}
+  \end{itemize}
+\end{frame}
+
+%========== Application ==================%
+\section{Application}
+
+\secction{GP pour les données non-Gaussiennes}
 \end{document}

@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from constants import columnwidth
 
 #----------------------#
 #------ Plot ----------#
@@ -8,9 +9,14 @@ def scatter_hist(x, y, margin_hist=True, fig=None):
     """Scatter plot with histogram marginals."""
 
     if fig is None:
-        fig = plt.figure(figsize=(6, 6))
+        fig = plt.figure(
+            # want a square
+            figsize=(2, 2)
+            # get_figsize(columnwidth, 0.5)
+        )
 
     color = 'purple'
+    # marginal distributions
     if margin_hist:
 
         # Add a gridspec with two rows and two columns and 
@@ -49,6 +55,11 @@ def scatter_hist(x, y, margin_hist=True, fig=None):
             bins='fd', density=True,
             color=color, orientation='horizontal'
         )
+
+        # does not work
+        # ax_histx.set_box_aspect(1/4)
+        # ax_histy.set_box_aspect(4/1)
+        # ax.set_box_aspect(1)
     else:
         gs = fig.add_gridspec(
             1, 1,
@@ -58,9 +69,9 @@ def scatter_hist(x, y, margin_hist=True, fig=None):
         ax = fig.add_subplot(gs[0, 0])
 
     # 2d data
-    ax.scatter(x, y, c=color, marker='.', s=1.0)
-    ax.set_xlabel(r'$y_1$', fontsize='large')
-    ax.set_ylabel(r'$y_2$', fontsize='large')
+    ax.scatter(x, y, c=color, marker='.', s=1.0, alpha=0.6)
+    ax.set_xlabel(r'$y_1$')
+    ax.set_ylabel(r'$y_2$')
 
     if margin_hist:
         return fig, ax, ax_histx, ax_histy
@@ -82,6 +93,19 @@ def gen_1D_gp(model, x, N):
         prior=True
     ).numpy().T
 
+def kernel_autocov_1D(kernel, x):
+    """Return 1D autocovariance values from kernel."""
+    
+    from torch import from_numpy, detach
+
+    Z = np.copy(x).reshape(-1, 1)
+    K = kernel.K(X1=from_numpy(Z), X2=from_numpy(np.zeros((1, 1))))
+    K = detach(K).numpy().reshape(-1, 1)
+
+    return K / kernel.K_diag(
+        X1=from_numpy(np.zeros((1, 1)))
+    ).detach().numpy()
+
 #----------------------#
 #--- Latex useful -----#
 #----------------------#
@@ -101,11 +125,11 @@ def numpy_to_latex(matrix, n_decimals=2):
 
     return latex_matrix
 
-def get_figsize(columnwidth, wf=0.5, hf=(5.**0.5-1.0)/2.0, ):
+def get_figsize(columnwidth, wf=0.5, hf=((5.0**0.5)-1.0)/2.0):
     """
     Return figure size in inches given the column with of a LaTeX template.
         columnwidth [float]: width of the column in latex. Get this from LaTeX 
-                                using \showthe\columnwidth
+                                using "\showthe\columnwidth"
         wf [float]:  width fraction in columnwidth units
         hf [float]:  height fraction in columnwidth units.
                         Set by default to golden ratio.
