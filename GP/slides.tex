@@ -17,7 +17,6 @@
 \newcommand{\eg}{\textit{e.g. }}
 \newcommand{\ie}{\textit{i.e. }}
 \renewcommand{\footnotesize}{\tiny}
-\newcommand{\coloredemph}[1]{\textcolor{internationalblue}{\emph{#1}}}
 % \newcommand{\Rlogo}{\includegraphics[scale = 0.02]{images/Rlogo.png}}
 % \newcommand{\Pythonlogo}{\includegraphics[scale = 0.075]{images/Pythonlogo.png}}
 
@@ -40,6 +39,9 @@
 \definecolor{internationalblue}{RGB}{48, 157, 181}
 \definecolor{dodgerblue}{RGB}{91, 193, 213}
 \usecolortheme[named=myuniversity]{structure}
+\newcommand{\coloredemph}[1]{\textcolor{internationalblue}{\emph{#1}}}
+\newcommand{\tored}[1]{\textcolor{red}{#1}}
+\newcommand{\toblue}[1]{\textcolor{internationalblue}{#1}}
 \usepackage{tikz}
 
 \usetheme{Madrid}
@@ -588,8 +590,7 @@ Thales Services Numériques,
 \end{frame}
 
 %========== Fitting a GP ==================%
-\section{Utilisation}
-
+\section{Prédire avec un GP}
 % Gaussian Bayesian rule
 \subsection{Règle de Bayes}
 \begin{frame}
@@ -623,90 +624,172 @@ Thales Services Numériques,
 \only<6>{\includegraphics{gaussian_2d_rho_high_with_conditional.pdf}}%
 \end{figure}
 \end{frame}
+
+% Color: current +/- prior with underbrace
+% \begin{frame}
+%   \frametitle{\secname}
+% \begin{itemize}
+%   \item Règle de Bayes étendue aux $GP$: $y \sim GP(m_y, k_y)$ et $f \sim GP(0, k_f)$
+%   \pause
+%     \begin{equation*}
+%       f(x_0) | y, \vectorx{x}, x_0 \sim GP(m^*, k^*) \\
+%     \pause
+%       \matrixx{K}_{f_y}
+%       =
+%       \scalemath{0.80}{
+%         \coloredemph{
+%       \begin{pmatrix}
+%         k_f(x_1, x_1) & \dots & k_f(x_1, x_n) \\
+%         \vdots      & \ddots& \vdots          \\
+%         k_f(x_n, x_1) & \dots & k_f(x_n, x_n)
+%       \end{pmatrix}}}\\
+%       \pause
+%       % posterior mean
+%       m^* (u) = m_y (u) + 
+%       \pause
+%       \scalemath{0.80}{
+%       \coloredemph{
+%         [k_y(u, x_1), \dots, k_y(u, x_n)]
+%       \matrixx{K}_{fn}^{-1}
+%       }%
+%       [f(x_1), \dots, f(x_n)]^\top%
+%       }\\
+%       \pause
+%       % posterior covariance
+%       k^* (u, u^\prime) = k_y (u, u^\prime) -
+%       \pause
+%       \scalemath{0.80}{
+%       \coloredemph{
+%         [k_y(u, x_1), \dots, k_y(u, x_n)]
+%       \matrixx{K}_{fn}^{-1}
+%       }
+%       [k_y(u^\prime, x_1), \dots, k_y(u^\prime, x_n)]^\top
+%       }%
+%     \end{equation*}
+% \end{itemize}
+% \end{frame}
 %
 \subsection{prédiction = data $\times$ hypothèse}
 \begin{frame}
+  \frametitle{\secname}
   \begin{itemize}
-    \item<1-> Data: $\{y_i, x_i\}_{1 \leq i \leq n}$
-    \item<2-> Modèle de prédiction: $\tilde{y}(x_0) = f(x_0) + \epsilon$
-    % \item Modèle des données d'entraînement: $y_i = f(x_i) + \epsilon$
-    % \pause
-    \item<3-> Hypothèse: $f$ est un processus Gaussien
-    \item<4-> $prédiction = hypothèse + data + bruit$
-    \item<5-> But: aprendre $f$ et prédire $\tilde{y}(x_0)$
-    \item<6-> Règle de Bayes:
+    \item<1-> Data entraînement: $\{y_i, x_i\}_{1 \leq i \leq n} = [y, \vectorx{x}]$, test: $y_0, \vectorx{x}_0$
+    %
+    \item<2-> Modèle de prédiction (régression): $y_0 = f(x_0) + \epsilon$
+    %
+    \item<3-> Hypothèse: $f_\theta \sim GP(0, k_\theta)$ et $y_i = f_\theta (x_i)$:
+    \begin{equation*}
+      \underbrace{[\tored{y}, f_\theta( \toblue{x_0} )]^\top}_{n \times 1} \sim \mathcal{N}(
+        % mean
+        \vectorx{0},
+        % kernel
+        % k_\theta(\tored{\vectorx{x}}, \tored{\vectorx{x}})
+        \begin{pmatrix}
+          \matrixx{K}_{\tored{y}}   & \vectorx{k}_{\toblue{0}} \\
+          \vectorx{k}_{\toblue{0}}^\top      & k_\theta( \toblue{x_0} , \toblue{x_0} )
+        \end{pmatrix}
+        )
+    \end{equation*}
+    %
+    \only<4>{
+      \matrixx{K}_{\tored{y}} =
+      \scalemath{0.80}{
+      \begin{pmatrix}
+        k_\theta(\tored{x_1}, \tored{x_1}) & \dots & k_\theta(\tored{x_1}, \tored{x_n}) \\
+        \vdots             & \ddots& \vdots          \\
+        k_\theta(\tored{x_n}, \tored{x_1}) & \dots & k_\theta(\tored{x_n},\tored{x_n})
+      \end{pmatrix}}
+    }
+    \only<5>{
+      $\vectorx{k}_{\toblue{0}} = [k_\theta(\toblue{x_0}, \tored{x_1}), \dots, k_\theta(\toblue{x_0}, \tored{x_n})]^\top$
+    }
+    %
+    % \item<4-> $prédiction = hypothèse + data + bruit$
+    \item<6-> But: aprendre $f_\theta$ $\rightarrow$ prédire $y_0 = f_\theta (x_0)$
+    \item <6-> Intuitivement: générer une \coloredemph{prédiction} $f_\theta(x_0) = y_0$ selon $GP \sim (0, k_\theta)$
+    ET garder ce qui fit aux data d'entraînement $[y, \vectorx{x}]$ et à \coloredemph{$x_0$}
+    \item <7-> Revient à générer selon:
       \begin{equation*}
-        \begin{split}
-        % informal way
-        \only<7>{
-          p(hypothèse | data)
-          & = \frac{
-            p(data, hypothèse)
-          }{
-            p(data)
-          } \\
-          & =
+        \only<7->{
+        p(f_\theta | y, \vectorx{x}, x_0)
+        }
+        \only<8->{
+          =
           \frac{
-            \overbrace{p(data | hypothèse)}^{\textcolor{red}{likelihood}}
-            \overbrace{p(hypothèse)}^{\textcolor{red}{a priori}}
+            \overbrace{p(y | \vectorx{x}, f_\theta)}^{\tored{likelihood}}
+            \overbrace{p(f_\theta)}^{\tored{prior}}
           }{
-            p(data)
-          }
+            p(y | \vectorx{x})
+          } 
+          = GP(
+            m_{*},
+            k_{*, \theta}
+          )
         }
-        % formal way
-        \only<8>{
-          p(f | X, y)
-        & =
-        }
-        \end{split}
       \end{equation*}
+    \item <9-> $m_{*} k_{*, \theta}$ ?
   \end{itemize}
 \end{frame}
 
-\subsection{GP: fondamentalement Bayésien}
-% Color: current +/- prior with underbrace
+% Poseterior of a GP
+\begin{frame}
+\frametitle{\secname}
+  \begin{itemize}
+    \item \only<1->{$p(f_\theta | y, \vectorx{x}) = GP(m_{*}, k_{*, \theta})$}
+     % posterior mean
+    \item \only<2->{$m_*(\toblue{x_0}) = 0 +$}
+    \only<3->{$\vectorx{k}_{\toblue{0}}^\top \tored{\matrixx{K}_{y}}^{-1} \tored{y}$}
+     % posterior covariance
+    \item \only<4->{$k_{*, \theta} (\toblue{x_0}, x_0^\prime) = k_\theta (\toblue{x_0}, \toblue{x_0}) -$}
+    \only<5->{$\vectorx{k}_{\toblue{x_0}}^\top \tored{\matrixx{K}_{y}}^{-1} \vectorx{k}_{\toblue{0}}$}
+    %
+    \item<6-> La distribution de probabilités de la prédiction $y_0$ (connaissant les data d'entraînement) est connue !
+    \item<6-> Accès à la prédiction moyenne, son incertitude (intervalle de confiance), quantiles, etc.
+  \end{itemize}
+\end{frame}
+
+\subsection{Exemple}
 \begin{frame}
   \frametitle{\secname}
-\begin{itemize}
-  \item Règle de Bayes étendue aux $GP$: $y \sim GP(m_y, k_y)$ et $f \sim GP(0, k_f)$
-  \pause
-    \begin{equation*}
-      y | f(x_1) \dots f(x_n) \sim GP(m^*, k^*) \\
-    \pause
-      \matrixx{K}_{fn}
-      =
-      \scalemath{0.80}{
-        \coloredemph{
-      \begin{pmatrix}
-        k_f(x_1, x_1) & \dots & k_f(x_1, x_n) \\
-        \vdots      & \ddots& \vdots          \\
-        k_f(x_n, x_1) & \dots & k_f(x_n, x_n)
-      \end{pmatrix}}}\\
-      \pause
-      % posterior mean
-      m^* (u) = m_y (u) + 
-      \pause
-      \scalemath{0.80}{
-      \coloredemph{
-        [k_y(u, x_1), \dots, k_y(u, x_n)]
-      \matrixx{K}_{fn}^{-1}
-      }%
-      [f(x_1), \dots, f(x_n)]^\top%
-      }\\
-      \pause
-      % posterior covariance
-      k^* (u, u^\prime) = k_y (u, u^\prime) -
-      \pause
-      \scalemath{0.80}{
-      \coloredemph{
-        [k_y(u, x_1), \dots, k_y(u, x_n)]
-      \matrixx{K}_{fn}^{-1}
-      }
-      [k_y(u^\prime, x_1), \dots, k_y(u^\prime, x_n)]^\top
-      }%
-    \end{equation*}
-\end{itemize}
+  \begin{itemize}
+    \item Exemple synthétique (très) simple:
+    %
+  \end{itemize}
 \end{frame}
+
+% \item<6-> Règle de Bayes:
+%       \begin{equation*}
+%         \begin{split}
+%         % informal way
+%         \only<7>{
+%           p(hypothèse | data)
+%           & = \frac{
+%             p(data, hypothèse)
+%           }{
+%             p(data)
+%           } \\
+%           & =
+%           \frac{
+%             \overbrace{p(data | hypothèse)}^{\textcolor{red}{likelihood}}
+%             \overbrace{p(hypothèse)}^{\textcolor{red}{prior}}
+%           }{
+%             \underbrace{p(data)}_{\textcolor{red}{evidence}}
+%           }
+%         }
+%         % formal way
+%         \only<8>{
+%           p(f_\theta | \vectorx{x}, y)
+%           & =
+%           \frac{
+%             \overbrace{p(y | \vectorx{x}, f_\theta)}^{\textcolor{red}{likelihood}}
+%             \overbrace{p(f_\theta)}^{\textcolor{red}{prior}}
+%           }{
+%             p(y | \vectorx{x})
+%           } \\
+%           & =
+%           GP()
+%         }
+%         \end{split}
 
 %========== Motivations ==================%
 \section{Motivations}
