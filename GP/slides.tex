@@ -42,6 +42,7 @@
 \newcommand{\coloredemph}[1]{\textcolor{internationalblue}{\emph{#1}}}
 \newcommand{\tored}[1]{\textcolor{red}{#1}}
 \newcommand{\toblue}[1]{\textcolor{internationalblue}{#1}}
+\newcommand{\topurple}[1]{\textcolor{violet}{#1}}
 \usepackage{tikz}
 
 \usetheme{Madrid}
@@ -77,6 +78,8 @@ Thales Services Numériques,
 % \newtheorem{corollary}{Corollary}[theorem]
 % \newtheorem{lemma}[theorem]{Lemma}
 
+% \renewenvironment{frame}{\begin{actionenv}{\thesection}}{\end{actionenv}}
+
 \begin{document}
 
 %========== First frame ==================%
@@ -95,8 +98,8 @@ Thales Services Numériques,
 %========== Gaussianity ==================%
 \section{Gaussien: vecteur vs. processus}
 \subsection{Construction d'un $GP$}
-\begin{frame}
-  \frametitle{\secname}
+\begin{frame}{\subsecname}
+  
 % 
   Loi Gaussienne unidimensionnelle:
   \begin{equation*}
@@ -115,8 +118,8 @@ Thales Services Numériques,
   \end{figure}
 \end{frame}
 
-\begin{frame}
-  \frametitle{\secname}
+\begin{frame}{\subsecname}
+  
 
   Loi Gaussienne multidimensionnelle (\coloredemph{vecteur} Gaussien): Distribution \coloredemph{jointe} des composantes d'un vecteur $d$-dimensionnel dont les \coloredemph{marginales} sont Gaussiennes (unidimensionnelles).
   \begin{equation*}
@@ -147,13 +150,12 @@ Thales Services Numériques,
       \end{array}
     \right.
   \end{equation*}
-
   % $\mathcal{N}(\mu_1, \Sigma_1^2) \dots \mathcal{N}(\mu_d, \Sigma_d^2)$.
 \end{frame}
 
 % d=2, low correlation
-\begin{frame}
-  % \frametitle{\secname}
+\begin{frame}{\subsecname}
+  % 
   Cas $d=2$:
   \begin{equation*}
     \vectorx{\mu}
@@ -182,7 +184,7 @@ Thales Services Numériques,
 \end{frame}
 
 % d=2, high correlation
-\begin{frame}
+\begin{frame}{\subsecname}
   Cas $d=2$:
   %
   \begin{equation*}
@@ -212,7 +214,7 @@ Thales Services Numériques,
 \end{frame}
 
 % d=2, zero correlation
-\begin{frame}
+\begin{frame}{\subsecname}
   Cas $d=2$:
   %
   \begin{equation*}
@@ -242,8 +244,8 @@ Thales Services Numériques,
 \end{frame}
 
 % d=5, high correlation: scatter and index plots
-\begin{frame}
-  % \frametitle{\secname}
+\begin{frame}{\subsecname}
+  % 
   Cas $d=2$:
   %
   \begin{equation*}
@@ -276,7 +278,7 @@ Thales Services Numériques,
 \end{frame}
 
 % d=5, high correlation: scatter and index plots
-\begin{frame}
+\begin{frame}{\subsecname}
   Cas $d=5$:
   %
   \begin{equation*}
@@ -307,7 +309,7 @@ Thales Services Numériques,
 \end{frame}
 
 % d=50, high correlation: scatter and index plots
-\begin{frame}
+\begin{frame}{\subsecname}
   Cas $d=50$:
   %
   \begin{equation*}
@@ -345,8 +347,8 @@ Thales Services Numériques,
 %
 
 % GP definition
-\begin{frame}
-  \frametitle{\secname}
+\begin{frame}{\subsecname}
+  
   Cas $d=\infty$: chaque courbe est une \coloredemph{collection infinie} de valeurs, que l'on peut voir comme une fonction:
   %
   \begin{enumerate}
@@ -385,8 +387,8 @@ Thales Services Numériques,
 \end{frame}
 
 % informal details
-\begin{frame}
-  \frametitle{\secname}
+\begin{frame}{\subsecname}
+  
   \begin{itemize}
     \item On impose souvent une forme simple sur $\mathbb{E}(y(x)) = m(x)$ 
     comme: $\vectorx{\beta}^\top \vectorx{x}$, $\vectorx{0}$
@@ -412,8 +414,8 @@ Thales Services Numériques,
 \end{frame}
 
 \subsection{Le kernel}
-\begin{frame}
-  \frametitle{\secname}
+\begin{frame}{\subsecname}
+  
   % 
   \begin{itemize}
     \item $k(\vectorx{x}, \vectorx{x^{\prime}}) = \mathbb{C}( y(\vectorx{x}), y(\vectorx{x^\prime}) )$
@@ -436,8 +438,8 @@ Thales Services Numériques,
 \end{frame}
 
 % Examples of kernel functions
-\begin{frame}
-  \frametitle{\secname}
+\begin{frame}{\subsecname}
+  
   \begin{itemize}
     \item Quelques exemples de $GP(0, k)$ défini sur $\mathcal{X} = \mathbb{R}^+$ et $\mathcal{Y} = \mathbb{R}$
     (série temporelle)
@@ -447,8 +449,8 @@ Thales Services Numériques,
 \end{frame}
 
 % Exponential quadratic
-\begin{frame}
-  \frametitle{\secname}
+\begin{frame}{\subsecname}
+  
   \begin{itemize}
     \item Exponentiel quadratique (aka "Radial basis", "Gaussian", "Heat" kernel):
     $k (t, t^\prime) = e^{- \frac{(t - t^\prime)^2}{2 \ell^2} }$
@@ -459,8 +461,8 @@ Thales Services Numériques,
   \end{figure}
 \end{frame}
 
-\begin{frame}
-  \frametitle{\secname}
+\begin{frame}{\subsecname}
+  
   % 
   \begin{itemize}
     \item Exponentiel quadratique (aka "Radial basis", "Gaussian", "Heat" kernel):
@@ -472,8 +474,8 @@ Thales Services Numériques,
   \end{figure}
 \end{frame}
 
-\begin{frame}
-  \frametitle{\secname}
+\begin{frame}{\subsecname}
+  
   % 
   \begin{itemize}
     \item Exponentiel quadratique (aka "Radial basis", "Gaussian", "Heat" kernel):
@@ -488,8 +490,8 @@ Thales Services Numériques,
 \end{frame}
 
 % Matern kernel
-\begin{frame}
-  \frametitle{\secname}
+\begin{frame}{\subsecname}
+  
   % 
   \begin{itemize}
     \item kernel de Matérn:
@@ -501,8 +503,8 @@ Thales Services Numériques,
   \end{figure}
 \end{frame}
 
-\begin{frame}
-  \frametitle{\secname}
+\begin{frame}{\subsecname}
+  
   % 
   \begin{itemize}
     \item kernel de Matérn:
@@ -514,8 +516,8 @@ Thales Services Numériques,
   \end{figure}
 \end{frame}
 
-\begin{frame}
-  \frametitle{\secname}
+\begin{frame}{\subsecname}
+  
   % 
   \begin{itemize}
     \item kernel de Matérn:
@@ -530,8 +532,8 @@ Thales Services Numériques,
 \end{frame}
 
 % Locally periodic
-\begin{frame}
-  \frametitle{\secname}
+\begin{frame}{\subsecname}
+  
   % 
   \begin{itemize}
     \item kernel locallement-périodique:
@@ -543,8 +545,8 @@ Thales Services Numériques,
   \end{figure}
 \end{frame}
 
-\begin{frame}
-  \frametitle{\secname}
+\begin{frame}{\subsecname}
+  
   % 
   \begin{itemize}
     \item kernel locallement-périodique:
@@ -558,8 +560,8 @@ Thales Services Numériques,
 \end{frame}
 
 % 
-\begin{frame}
-  \frametitle{\secname}
+\begin{frame}{\subsecname}
+  
   %
   \begin{itemize}
     \item Aussi, des kernels dans le domaine fréquentiel (Fourier)
@@ -575,8 +577,8 @@ Thales Services Numériques,
   \end{figure}
 \end{frame}
 
-\begin{frame}
-  \frametitle{\secname}
+\begin{frame}{\subsecname}
+  
   %
   \begin{itemize}
     \item Fléxibilité des kernels: $k_1 + k_2$, $k_1 \times k_2$, $g(t) \times k$ ($g$ est déterministe)
@@ -593,8 +595,8 @@ Thales Services Numériques,
 \section{Prédire avec un GP}
 % Gaussian Bayesian rule
 \subsection{Règle de Bayes}
-\begin{frame}
-  \frametitle{\secname}
+\begin{frame}{\subsecname}
+  
 \begin{itemize}
   \item<1-> Règle de Bayes: 
   $p(y_2| y_1)
@@ -607,15 +609,15 @@ Thales Services Numériques,
       \mu_2
     \end{pmatrix},
       \begin{pmatrix}
-        \Sigma_{1} & \Sigma_{12} \\
-        \Sigma_{12} & \Sigma_{2}
+        \Sigma_{1} & \rho \\
+        \rho & \Sigma_{2}
       \end{pmatrix}
   )$%
   \item<3-> $
   p(y_2 | y_1 = u) = \mathcal{N} (
-    \mu_2 \coloredemph{+ \Sigma_{12} \Sigma_1^{-1} (u - \mu_1)}
+    \mu_2 \coloredemph{+ \rho \Sigma_1^{-1} (u - \mu_1)}
     ,
-    \Sigma_2 \coloredemph{- \Sigma_{12}^2 \Sigma_1^{-1}}
+    \Sigma_2 \coloredemph{- \rho^2 \Sigma_1^{-1}}
   )$%
 \end{itemize}
 \begin{figure}
@@ -625,61 +627,18 @@ Thales Services Numériques,
 \end{figure}
 \end{frame}
 
-% Color: current +/- prior with underbrace
-% \begin{frame}
-%   \frametitle{\secname}
-% \begin{itemize}
-%   \item Règle de Bayes étendue aux $GP$: $y \sim GP(m_y, k_y)$ et $f \sim GP(0, k_f)$
-%   \pause
-%     \begin{equation*}
-%       f(x_0) | y, \vectorx{x}, x_0 \sim GP(m^*, k^*) \\
-%     \pause
-%       \matrixx{K}_{f_y}
-%       =
-%       \scalemath{0.80}{
-%         \coloredemph{
-%       \begin{pmatrix}
-%         k_f(x_1, x_1) & \dots & k_f(x_1, x_n) \\
-%         \vdots      & \ddots& \vdots          \\
-%         k_f(x_n, x_1) & \dots & k_f(x_n, x_n)
-%       \end{pmatrix}}}\\
-%       \pause
-%       % posterior mean
-%       m^* (u) = m_y (u) + 
-%       \pause
-%       \scalemath{0.80}{
-%       \coloredemph{
-%         [k_y(u, x_1), \dots, k_y(u, x_n)]
-%       \matrixx{K}_{fn}^{-1}
-%       }%
-%       [f(x_1), \dots, f(x_n)]^\top%
-%       }\\
-%       \pause
-%       % posterior covariance
-%       k^* (u, u^\prime) = k_y (u, u^\prime) -
-%       \pause
-%       \scalemath{0.80}{
-%       \coloredemph{
-%         [k_y(u, x_1), \dots, k_y(u, x_n)]
-%       \matrixx{K}_{fn}^{-1}
-%       }
-%       [k_y(u^\prime, x_1), \dots, k_y(u^\prime, x_n)]^\top
-%       }%
-%     \end{equation*}
-% \end{itemize}
-% \end{frame}
-%
-\subsection{prédiction = data $\times$ hypothèse}
-\begin{frame}
-  \frametitle{\secname}
+% Posterior of a GP
+\subsection{prédiction $=$ data $\times$ hypothèse}
+\begin{frame}{\subsecname}
+  
   \begin{itemize}
-    \item<1-> Data entraînement: $\{y_i, x_i\}_{1 \leq i \leq n} = [y, \vectorx{x}]$, test: $y_0, \vectorx{x}_0$
+    \item<1-> Data \tored{entraînement}: $\{y_i, x_i\}_{1 \leq i \leq n} = [\tored{y}, \tored{\vectorx{x}}]$, test: $y_0, \toblue{x_0}$
     %
-    \item<2-> Modèle de prédiction (régression): $y_0 = f(x_0) + \epsilon$
+    \item<2-> Modèle de prédiction (régression): $y_0 = f(x_0)$ (pour le moment sans bruit)
     %
-    \item<3-> Hypothèse: $f_\theta \sim GP(0, k_\theta)$ et $y_i = f_\theta (x_i)$:
+    \item<3-> \topurple{Hypothèse}: $\topurple{f_\theta} \sim GP(0, k_\theta)$ et $y_i = f_\theta (x_i)$:
     \begin{equation*}
-      \underbrace{[\tored{y}, f_\theta( \toblue{x_0} )]^\top}_{n \times 1} \sim \mathcal{N}(
+      \underbrace{[\tored{y}, f_\theta( \toblue{x_0} )]^\top}_{(n + 1) \times 1} \sim \mathcal{N}(
         % mean
         \vectorx{0},
         % kernel
@@ -705,19 +664,19 @@ Thales Services Numériques,
     }
     %
     % \item<4-> $prédiction = hypothèse + data + bruit$
-    \item<6-> But: aprendre $f_\theta$ $\rightarrow$ prédire $y_0 = f_\theta (x_0)$
-    \item <6-> Intuitivement: générer une \coloredemph{prédiction} $f_\theta(x_0) = y_0$ selon $GP \sim (0, k_\theta)$
-    ET garder ce qui fit aux data d'entraînement $[y, \vectorx{x}]$ et à \coloredemph{$x_0$}
+    \item<6-> But: aprendre $f_\theta$ $\rightarrow$ prédire $f_\theta (x_0) = y_0$
+    \item <6-> Intuitivement: générer des \coloredemph{prédictions} avec $f_\theta(x_0) \sim GP (0, k_\theta)$
+    ET garder ce qui fit aux data d'entraînement $[\tored{y}, \tored{\vectorx{x}}]$ et à \coloredemph{$x_0$}
     \item <7-> Revient à générer selon:
       \begin{equation*}
         \only<7->{
-        p(f_\theta | y, \vectorx{x}, x_0)
+          \overbrace{p(f_\theta | y, \vectorx{x}, x_0)}^{\toblue{posterior}}
         }
         \only<8->{
           =
           \frac{
             \overbrace{p(y | \vectorx{x}, f_\theta)}^{\tored{likelihood}}
-            \overbrace{p(f_\theta)}^{\tored{prior}}
+            \overbrace{p(f_\theta)}^{\topurple{prior}}
           }{
             p(y | \vectorx{x})
           } 
@@ -727,13 +686,12 @@ Thales Services Numériques,
           )
         }
       \end{equation*}
-    \item <9-> $m_{*} k_{*, \theta}$ ?
+    \item <9-> $m_{*}, k_{*, \theta}$ ?
   \end{itemize}
 \end{frame}
 
-% Poseterior of a GP
-\begin{frame}
-\frametitle{\secname}
+\begin{frame}{\subsecname}
+
   \begin{itemize}
     \item \only<1->{$p(f_\theta | y, \vectorx{x}) = GP(m_{*}, k_{*, \theta})$}
      % posterior mean
@@ -741,19 +699,92 @@ Thales Services Numériques,
     \only<3->{$\vectorx{k}_{\toblue{0}}^\top \tored{\matrixx{K}_{y}}^{-1} \tored{y}$}
      % posterior covariance
     \item \only<4->{$k_{*, \theta} (\toblue{x_0}, x_0^\prime) = k_\theta (\toblue{x_0}, \toblue{x_0}) -$}
-    \only<5->{$\vectorx{k}_{\toblue{x_0}}^\top \tored{\matrixx{K}_{y}}^{-1} \vectorx{k}_{\toblue{0}}$}
+    \only<5->{$\vectorx{k}_{\toblue{0}}^\top \tored{\matrixx{K}_{y}}^{-1} \vectorx{k}_{\toblue{0}}$}
     %
-    \item<6-> La distribution de probabilités de la prédiction $y_0$ (connaissant les data d'entraînement) est connue !
-    \item<6-> Accès à la prédiction moyenne, son incertitude (intervalle de confiance), quantiles, etc.
+    \item<6-> La distribution de probabilités de la prédiction $y_0$ (connaissant les data d'entraînement) est caractérisée !
+    %
+    \item<6-> Pour n'importe quel $x_0$: accès à la prédiction moyenne, son incertitude (intervalle de confiance), quantiles, etc., de $y_0$
+    %
+    \item<7-> La prédiction dépend aussi de $\theta$ (hyperparamètre) !
   \end{itemize}
 \end{frame}
 
-\subsection{Exemple}
-\begin{frame}
-  \frametitle{\secname}
+\begin{frame}{\subsecname}
   \begin{itemize}
-    \item Exemple synthétique (très) simple:
+    \item<1-> Meilleur $\theta$, maximum de: $\tored{likelihood}(\theta) = p(y | \vectorx{x}, f_\theta)$
     %
+    \item<2-> $\leftrightarrow$ $\theta$ telle que les données d'entraînement $\tored{y}$
+     soient le plus probables au regard de l'hypothèse $f_\theta$ et des inputs $\tored{\vectorx{x}}$
+    % \item<3-> 
+      \begin{equation*}
+        \log p(y | \vectorx{x}, f_\theta) =
+        \log \tored{likelihood}(\theta) =
+        - \underbrace{ \tored{y}^\top \tored{\matrixx{K}_{y}}^{-1} \tored{y} }_{fidélité}
+        - \underbrace{ \frac{1}{2} \log | \tored{\matrixx{K}_{y}} |}_{pénalité}
+        - \frac{n}{2} \log 2 \pi
+      \end{equation*}    
+    \item<3-> Rappel: $\tored{\matrixx{K}_{y}}$ matrice $n \times n$ des $k_\theta(x_i, x_j)$
+    \item<4-> Apprentissage de $\theta$ par descente de gradient de $- \log \tored{likelihood}$ (large sous-domaine de la communauté GP)
+  \end{itemize}
+\end{frame}
+
+% Example
+\subsection{Exemple}
+\begin{frame}{\subsecname}
+  
+  \begin{itemize}
+    \item\tored{train} = $\{y_i, x_i\}$ où $y_i = g(x_i) = - \cos(3 \pi x_i) + \frac{1}{4} \sin(8 \pi x_i)$
+    %
+      \begin{figure}
+        \includegraphics{gp_1D_example_noisefree_data.pdf}
+      \end{figure}
+    %[y_0]
+    \item $f_\theta(x_0 = 0.8) = \tilde{y}_0$ ?
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{\subsecname}
+  \begin{itemize}
+    \item<1-> hypothèse: $f$ est lisse $\rightarrow$ kernel exponentiel quadratique
+    %
+    \item $k_\theta (x, x^\prime) = \sigma_k e^{- \frac{(x - x^\prime)^2}{2 \ell^2} }, \theta = [\sigma_k, \ell]$
+    %
+    \item<2-> $[\sigma_k, \ell]$ inconnus (ici fixés arbitrairement)
+      \begin{figure}
+        \includegraphics{gp_1D_example_noisefree_data_prior.pdf}
+      \end{figure}    
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{\subsecname}
+  \begin{itemize}
+    \item<1-> $\theta$ ? minimisation de $-\log$ likelihood: $\sigma_k \approx 0.92, \ell \approx 0.11$
+    %
+    \item<2-> $m_{*}, k_{*, \theta}$ et $\theta$ appris
+    % 
+    \item<3-> Génération selon la distribution posterior $GP( m_{*}, k_{*, \theta} )$
+      \begin{figure}
+        \includegraphics{gp_1D_example_noisefree_pred.pdf}
+      \end{figure}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{\subsecname}
+  \begin{itemize}
+    \item $\tilde{y}_0$: médiane des tirages aléatoires de $p(f_\theta | y, \vectorx{x}, x_0) = GP(m_{*}, k_{*, \theta})$ en $x_0 =0.8$
+    %
+    \item med $\pm \frac{\sigma}{2}$: $ = -0.22 \pm 0.16$ ($95\%$)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{\subsecname}
+  \begin{itemize}
+    \item Quid d'autres valeurs de $x_0$ ?
+      \begin{figure}
+        \includegraphics{gp_1D_example_noisefree_pred_meanvar.pdf}
+      \end{figure}
+    %
+    \item Incertitude sur "toute" la fonction
   \end{itemize}
 \end{frame}
 
@@ -796,8 +827,8 @@ Thales Services Numériques,
 \subsection{Tractabilité mathématique}
 
 % Mathematical properties
-\begin{frame}
-  \frametitle{\secname}
+\begin{frame}{\subsecname}
+  
 $y_1 \sim GP$, $y_2 \sim GP$
 \begin{itemize}
   \pause
@@ -819,8 +850,8 @@ $y_1 \sim GP$, $y_2 \sim GP$
 
 % Non-parametric
 \subsection{Non-paramétrique}
-\begin{frame}
-  \frametitle{\secname}
+\begin{frame}{\subsecname}
+  
     \begin{itemize}
     \item Modèle \coloredemph{paramétrique}: modèle = des paramètres
     \item Les données d'entraînement \coloredemph{conditionnent} les paramètres qui conditionnent eux-mêmes l'inférence (lien indirect)

@@ -84,7 +84,7 @@ def scatter_hist(x, y, margin_hist=True, fig=None):
 def gen_1D_gp(model, x, N):
     """Draw N GPs with given kernel and mean."""
 
-    model.gpr.likelihood.scale.assign(value=1.0, train=False)
+    # model.gpr.likelihood.scale.assign(value=1.0, train=False)
     d = 1
     # convert to 2D array of (1D) grid values
     return model.gpr.sample_f(
@@ -129,14 +129,14 @@ def get_figsize(columnwidth, wf=0.5, hf=((5.0**0.5)-1.0)/2.0):
     """
     Return figure size in inches given the column with of a LaTeX template.
         columnwidth [float]: width of the column in latex. Get this from LaTeX 
-                                using "\showthe\columnwidth"
+            using "\\showthe\\columnwidth".
         wf [float]:  width fraction in columnwidth units
         hf [float]:  height fraction in columnwidth units.
-                        Set by default to golden ratio.
+            Set by default to golden ratio.
 
     Returns:  [fig_width,fig_height]: that should be given to matplotlib
     """
-    fig_width_pt = columnwidth*wf 
+    fig_width_pt = columnwidth*wf
     inches_per_pt = 1.0/72.27               # Convert pt to inch
     fig_width = fig_width_pt*inches_per_pt  # width in inches
     fig_height = fig_width*hf      # height in inches
