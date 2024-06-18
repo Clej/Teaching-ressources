@@ -9,7 +9,7 @@ from mogptk import Model as Model_mogptk
 from mogptk import Exact
 from mogptk import DataSet
 from mogptk.gpr.singleoutput import SquaredExponentialKernel,\
-    MaternKernel, PeriodicKernel, SincKernel, SpectralMixtureKernel
+    MaternKernel, PeriodicKernel, SincKernel, SpectralMixtureKernel, WhiteKernel
 from mogptk.gpr.kernel import MulKernel, AddKernel
 from mogptk.gpr.mean import LinearMean, ConstantMean
 from torch import manual_seed
@@ -51,7 +51,10 @@ lengthscales = [2.0, 1.0, 0.1]
 ## for Locally periodic
 per = [1.25, 0.5]
 
-for idx, l in enumerate(per):
+## for whitenoise
+magnitude = [2.0]
+
+for idx, l in enumerate(magnitude):
 
     #-------------------#
     #   Set a model
@@ -70,9 +73,11 @@ for idx, l in enumerate(per):
 
     # kernel = SpectralMixtureKernel(input_dims=1, Q=2)
 
-    kernel = SincKernel(input_dims=1, active_dims=[0])
-    kernel.bandwidth.assign(value=[l], train=False)
+    kernel = WhiteKernel(input_dims=1)
+    kernel.magnitude.assign(value=1.0, train=False)
 
+    # kernel = SincKernel(input_dims=1, active_dims=[0])
+    # kernel.bandwidth.assign(value=[l], train=False)
 
     model = Model_mogptk(mogptk_dataset, inference=Exact(), kernel=kernel, mean=ConstantMean())
     model.gpr.likelihood.scale.assign(value=1.0, train=False)
@@ -94,12 +99,14 @@ for idx, l in enumerate(per):
     ax.plot(
         tt,
         prior_samples,
-        linestyle='solid', linewidth=0.75
+        linestyle='solid', linewidth=0.75,
+        alpha=0.75
     )
 
     ax.set_xlim(tt.min(), tt.max())
+    ax.set_ylim(-3.0, 3.0)
     # ax.set_title(r"$\ell = {{{:.2f}}}$".format(l))
-    ax.set_title(r"$p = {{{:.2f}}}, \ell = 1$".format(l))
+    ax.set_title(r"$ \sigma = {{{:.2f}}} $".format(l))
     ax.set_xlabel(r'$t$', fontsize='x-large')
     ax.set_ylabel(r'$y(t)$', fontsize='x-large')
 

@@ -51,7 +51,7 @@
 \setbeamercolor{title in head/foot}{bg=internationalblue}
 \setbeamercolor{author in head/foot}{bg=dodgerblue}
 
-\title[Introduction aux Processus Gaussiens]{Introduction aux Processus Gaussiens}
+\title[Introduction aux Processus Gaussiens]{Introduction aux Processus Gaussiens (1/3)}
 \subtitle{Application aux données spatio-temporelles}
 \institute[]{}
 % \titlegraphic{
@@ -86,11 +86,26 @@ Thales Services Numériques,
 %Information to be included in the title page:
 \frame{\titlepage}
 
+\section{Contenu}
 %========== ToC ==========================%
+\begin{frame}\frametitle{\secname}
+  Objectifs de cette présentation:
+  \begin{itemize}
+    \item Pédagogique (pas un état de l'art)
+    \pause
+    \item Comprendre la philosophie (Bayésienne) des processus Gaussien (GP)
+    \pause
+    \item Comprendre l'interêt probabiliste/prédictifs des $GP$
+    \pause
+    \item Comprendre les limites des $GP$
+    \pause
+    \item 
+  \end{itemize}
+\end{frame}
+
 \AtBeginSubsection[]
 {
-  \begin{frame}
-    \frametitle{Plan}
+  \begin{frame}\frametitle{\secname}
     \tableofcontents[currentsubsection]
   \end{frame}
 }
@@ -146,7 +161,7 @@ Thales Services Numériques,
       \begin{array}{ll}
         \Sigma_j  : \text{écart-type} \text{ de } y_j\\
         \Sigma_{ij} : \text{covariance entre les } \\
-        \text{marginales de } y_i \text{ et } y_j
+        \text{marginales } y_i \text{ et } y_j
       \end{array}
     \right.
   \end{equation*}
@@ -353,7 +368,7 @@ Thales Services Numériques,
   %
   \begin{enumerate}
     \item $\vectorx{\mu}$: vecteur de taille infinie $\Leftrightarrow$ fonction moyenne $\mathbb{E}(y(x)) = m(\vectorx{x})$
-    \item $\matrixx{\Sigma}$: matrice de taille infinie $\Leftrightarrow$  noyau de covariance 
+    \item $\matrixx{\Sigma}$: matrice de taille infinie $\Leftrightarrow$  noyau de covariance ou "\coloredemph{kernel}"
     $\mathbb{C}( y(\vectorx{x}), y(\vectorx{x^\prime}) ) = k(\vectorx{x}, \vectorx{x^{\prime}})$
   \end{enumerate}
   % 
@@ -415,7 +430,6 @@ Thales Services Numériques,
 
 \subsection{Le kernel}
 \begin{frame}{\subsecname}
-  
   % 
   \begin{itemize}
     \item $k(\vectorx{x}, \vectorx{x^{\prime}}) = \mathbb{C}( y(\vectorx{x}), y(\vectorx{x^\prime}) )$
@@ -431,7 +445,7 @@ Thales Services Numériques,
       $y(x_0) = \sum_{i=1}^{\infty} y(x_i) k(x_i, x_0)$ 
     }
     \pause
-    \item Un kernel est dépend d'un vecteur \coloredemph{d'hyperparamètres} $\vectorx{\theta}$
+    \item Un kernel dépend d'un vecteur \coloredemph{d'hyperparamètres} $\vectorx{\theta}$
     \pause
     \item Et donc le nerf d'un $GP$ est essentiellement dans son kernel (noyau)
   \end{itemize}
@@ -439,137 +453,94 @@ Thales Services Numériques,
 
 % Examples of kernel functions
 \begin{frame}{\subsecname}
-  
   \begin{itemize}
     \item Quelques exemples de $GP(0, k)$ défini sur $\mathcal{X} = \mathbb{R}^+$ et $\mathcal{Y} = \mathbb{R}$
     (série temporelle)
+    %
     \item kernel de série temporelle $\leftrightarrow$ fonction d'autocovariance
+    %
     \item Visualiser: bonne manière de comprendre un kernel (au delà des considérations théoriques...)
   \end{itemize}  
 \end{frame}
 
 % Exponential quadratic
 \begin{frame}{\subsecname}
-  
   \begin{itemize}
-    \item Exponentiel quadratique (aka "Radial basis", "Gaussian", "Heat" kernel):
+    \item<1-> Exponentiel quadratique (aka "Radial basis", "Gaussian", "Heat" kernel):
     $k (t, t^\prime) = e^{- \frac{(t - t^\prime)^2}{2 \ell^2} }$
+    %
+    \item<1-> $GP (0, k)$ génère des $y$ infiniment différentiables par rapport à $t$
+    %
+    \item<1-> $\ell$ contrôle le lissé (ici au sens oscillatoir) des générées
   \end{itemize}
-  %
   \begin{figure}
-    \includegraphics{10_gp_time_SquaredExponentialKernel_2.00.pdf}
-  \end{figure}
-\end{frame}
-
-\begin{frame}{\subsecname}
-  
-  % 
-  \begin{itemize}
-    \item Exponentiel quadratique (aka "Radial basis", "Gaussian", "Heat" kernel):
-    $k (t, t^\prime) = e^{- \frac{(t - t^\prime)^2}{2 \ell^2} }$
-  \end{itemize}
-  %
-  \begin{figure}
-    \includegraphics{10_gp_time_SquaredExponentialKernel_1.00.pdf}
-  \end{figure}
-\end{frame}
-
-\begin{frame}{\subsecname}
-  
-  % 
-  \begin{itemize}
-    \item Exponentiel quadratique (aka "Radial basis", "Gaussian", "Heat" kernel):
-    $k (t, t^\prime) = e^{- \frac{(t - t^\prime)^2}{2 \ell^2} }$
-    \item $GP (0, k)$ génères des $y$ infiniment différentiables par rapport à $t$
-    \item \implies $\ell$ contrôle le lissé (ici au sens oscillatoir) des générées
-  \end{itemize}
-  %
-  \begin{figure}
-    \includegraphics{10_gp_time_SquaredExponentialKernel_0.10.pdf}
+    \only<2>{\includegraphics{10_gp_time_SquaredExponentialKernel_2.00.pdf}}%
+    \only<3>{\includegraphics{10_gp_time_SquaredExponentialKernel_1.00.pdf}}%
+    \only<4>{\includegraphics{10_gp_time_SquaredExponentialKernel_0.10.pdf}}%
   \end{figure}
 \end{frame}
 
 % Matern kernel
 \begin{frame}{\subsecname}
-  
-  % 
   \begin{itemize}
-    \item kernel de Matérn:
+    \item<1-> kernel de Matérn:
     $k (t, t^\prime) = ( 1 + \sqrt{\frac{3 |t - t^\prime|}{\ell} } ) e^{-\sqrt{\frac{3 |t - t^\prime|}{\ell} }}$
+    %
+    \item<1-> Génère des $y$ différentiables une seule fois par rapport à $t$
+    %
+    \item<1-> $\ell$: même interprétation que le kernel exponentiel quadratique
   \end{itemize}
-  %
   \begin{figure}
-    \includegraphics{10_gp_time_MaternKernel_2.00.pdf}
-  \end{figure}
-\end{frame}
-
-\begin{frame}{\subsecname}
-  
-  % 
-  \begin{itemize}
-    \item kernel de Matérn:
-    $k (t, t^\prime) = ( 1 + \sqrt{\frac{3 |t - t^\prime|}{\ell} } ) e^{-\sqrt{\frac{3 |t - t^\prime|}{\ell} }}$
-  \end{itemize}
-  %
-  \begin{figure}
-    \includegraphics{10_gp_time_MaternKernel_1.00.pdf}
-  \end{figure}
-\end{frame}
-
-\begin{frame}{\subsecname}
-  
-  % 
-  \begin{itemize}
-    \item kernel de Matérn:
-    $k (t, t^\prime) = ( 1 + \sqrt{\frac{3 |t - t^\prime|}{\ell} } ) e^{-\sqrt{\frac{3 |t - t^\prime|}{\ell} }}$
-    \item Génère des $y$ différentiables une seule fois par rapport à $t$
-    \item $\ell$: même interprétation que le kernel exponentiel quadratique
-  \end{itemize}
-  %
-  \begin{figure}
-    \includegraphics{10_gp_time_MaternKernel_0.10.pdf}
+    \only<2>{\includegraphics{10_gp_time_MaternKernel_2.00.pdf}}%
+    \only<3>{\includegraphics{10_gp_time_MaternKernel_1.00.pdf}}%
+    \only<4>{\includegraphics{10_gp_time_MaternKernel_0.10.pdf}}%
   \end{figure}
 \end{frame}
 
 % Locally periodic
-\begin{frame}{\subsecname}
-  
+\begin{frame}{\subsecname}  
   % 
   \begin{itemize}
-    \item kernel locallement-périodique:
-    $k (t, t^\prime) = e^{- \frac{2 \sin^2(\pi (t - t^\prime) / p)}{\ell^2}}$ %$e^{- \frac{(t - t^\prime)^2}{2 \ell^2}} $
+    \item<1-> kernel locallement-périodique:
+    $k (t, t^\prime) = e^{- \frac{2 \sin^2(\pi (t - t^\prime) / p)}{\ell^2}}$
+    %
+    \item<1-> Génère des $y$ périodiques ET lisses
   \end{itemize}
-  %
   \begin{figure}
-    \includegraphics{10_gp_time_PeriodicKernel_1.25.pdf}
+    \only<2>{\includegraphics{10_gp_time_PeriodicKernel_1.25.pdf}}%
+    \only<3>{\includegraphics{10_gp_time_PeriodicKernel_0.50.pdf}}%
+  \end{figure}
+\end{frame}
+
+% White noise kernel
+\begin{frame}{\subsecname}
+  \begin{itemize}
+    \item<1-> kernel de bruit blanc: 
+    \begin{equation*}
+        k(t, t^\prime) = 
+        \left\{
+          \begin{array}{ll}
+            \sigma^2  \text{ si } t = t^\prime \\
+            0 \text{ sinon }
+          \end{array}
+        \right.
+    \end{equation*}
+    %
+    \item<1-> Aucune corrélation. $\sigma$ contrôle l'amplitude (variance) du bruit
+  \end{itemize}
+  \begin{figure}
+    \includegraphics{10_gp_time_WhiteKernel_2.00.pdf}%
   \end{figure}
 \end{frame}
 
 \begin{frame}{\subsecname}
-  
-  % 
-  \begin{itemize}
-    \item kernel locallement-périodique:
-    $k (t, t^\prime) = e^{- \frac{2 \sin^2(\pi (t - t^\prime) / p)}{\ell^2}}$ %$e^{- \frac{(t - t^\prime)^2}{2 \ell^2}} $
-    \item Génère des $y$ quasi-périodiques
-  \end{itemize}
-  %
-  \begin{figure}
-    \includegraphics{10_gp_time_PeriodicKernel_0.50.pdf}
-  \end{figure}
-\end{frame}
-
-% 
-\begin{frame}{\subsecname}
-  
-  %
   \begin{itemize}
     \item Aussi, des kernels dans le domaine fréquentiel (Fourier)
     \footnote{ex: $\sum_{q=0}^Q \sigma_q^2 e^{-2 \pi^2 \Sigma_q (t-t^\prime)^2} \cos(2\pi \mu_q (t-t^\prime))$}
   %  
   \pause
-    \item Une famille standard est celle des \coloredemph{kernels stationnaires}. 
-    $k(t, t^\prime)$ ne dépend que de $t - t^\prime$ (ex: tous les kernels précédents):
+    \item Famille des \coloredemph{kernels stationnaires}, 
+    $k(t, t^\prime)$ ne dépend que de $t - t^\prime \leftrightarrow $ "plus les inputs sont éloignées, moins les sorties associées sont corrélées"
   \end{itemize}
   %
   \begin{figure}
@@ -578,53 +549,53 @@ Thales Services Numériques,
 \end{frame}
 
 \begin{frame}{\subsecname}
-  
-  %
   \begin{itemize}
     \item Fléxibilité des kernels: $k_1 + k_2$, $k_1 \times k_2$, $g(t) \times k$ ($g$ est déterministe)
-  %
   \pause
-    \item Depuis quelques années: construction de kernels par des deep-nets (deep-kernel)
+    \begin{itemize}
+      \item $k_1 + k_2$: "Ou" logique
+      \item $k_1 \times k_2$: "Et" logique
+    \end{itemize}
+    %
+    \item Depuis quelques années: construction de kernels par des deep-nets (deep-kernel), pratique mais pas interprétable
   % 
   \pause
-    \item Plus récemment: construction du kernel à  partir d'équations différentielles
+    \item Plus récemment: construction de kernel à  partir d'équations différentielles
   \end{itemize}
 \end{frame}
 
 %========== Fitting a GP ==================%
-\section{Prédire avec un GP}
+\section{Prédire avec un $GP$}
 % Gaussian Bayesian rule
 \subsection{Règle de Bayes}
-\begin{frame}{\subsecname}
-  
-\begin{itemize}
-  \item<1-> Règle de Bayes: 
-  $p(y_2| y_1)
-  = \frac{p(y_1, y_2)}{p(y_1)}
-  = \frac{p(y_1 | y_2) p(y_2)}{p(y_1)}
-  $%
-  \item<2-> $  \vectorx{y} = [y_1, y_2]^\top \sim \mathcal{N} (
-    \begin{pmatrix}
-      \mu_1 \\
-      \mu_2
-    \end{pmatrix},
+\begin{frame}{\subsecname}  
+  \begin{itemize}
+    \item<1-> Règle de Bayes: 
+    $p(y_2| y_1)
+    = \frac{p(y_1, y_2)}{p(y_1)}
+    = \frac{p(y_1 | y_2) p(y_2)}{p(y_1)}
+    $%
+    \item<2-> $  \vectorx{y} = [y_1, y_2]^\top \sim \mathcal{N} (
       \begin{pmatrix}
-        \Sigma_{1} & \rho \\
-        \rho & \Sigma_{2}
-      \end{pmatrix}
-  )$%
-  \item<3-> $
-  p(y_2 | y_1 = u) = \mathcal{N} (
-    \mu_2 \coloredemph{+ \rho \Sigma_1^{-1} (u - \mu_1)}
-    ,
-    \Sigma_2 \coloredemph{- \rho^2 \Sigma_1^{-1}}
-  )$%
-\end{itemize}
-\begin{figure}
-\only<4>{\includegraphics{gaussian_2d_rho_null_with_conditional.pdf}}%
-\only<5>{\includegraphics{gaussian_2d_rho_low_with_conditional.pdf}}%
-\only<6>{\includegraphics{gaussian_2d_rho_high_with_conditional.pdf}}%
-\end{figure}
+        \mu_1 \\
+        \mu_2
+      \end{pmatrix},
+        \begin{pmatrix}
+          \Sigma_{1} & \rho \\
+          \rho & \Sigma_{2}
+        \end{pmatrix}
+    )$%
+    \item<3-> $
+    p(y_2 | y_1 = u) = \mathcal{N} (
+      \mu_2 \coloredemph{+ \rho \Sigma_1^{-1} (u - \mu_1)},
+      \Sigma_2 \coloredemph{- \rho^2 \Sigma_1^{-1}}
+    )$%
+  \end{itemize}
+  \begin{figure}
+    \only<4>{\includegraphics{gaussian_2d_rho_null_with_conditional.pdf}}%
+    \only<5>{\includegraphics{gaussian_2d_rho_low_with_conditional.pdf}}%
+    \only<6>{\includegraphics{gaussian_2d_rho_high_with_conditional.pdf}}%
+  \end{figure}
 \end{frame}
 
 % Posterior of a GP
@@ -636,7 +607,7 @@ Thales Services Numériques,
     %
     \item<2-> Modèle de prédiction (régression): $y_0 = f(x_0)$ (pour le moment sans bruit)
     %
-    \item<3-> \topurple{Hypothèse}: $\topurple{f_\theta} \sim GP(0, k_\theta)$ et $y_i = f_\theta (x_i)$:
+    \item<3-> \topurple{Hypothèses}: $\topurple{f_\theta} \sim GP(0, k_\theta)$ et $y_i = f_\theta (x_i)$:
     \begin{equation*}
       \underbrace{[\tored{y}, f_\theta( \toblue{x_0} )]^\top}_{(n + 1) \times 1} \sim \mathcal{N}(
         % mean
@@ -665,14 +636,26 @@ Thales Services Numériques,
     %
     % \item<4-> $prédiction = hypothèse + data + bruit$
     \item<6-> But: aprendre $f_\theta$ $\rightarrow$ prédire $f_\theta (x_0) = y_0$
-    \item <6-> Intuitivement: générer des \coloredemph{prédictions} avec $f_\theta(x_0) \sim GP (0, k_\theta)$
-    ET garder ce qui fit aux data d'entraînement $[\tored{y}, \tored{\vectorx{x}}]$ et à \coloredemph{$x_0$}
-    \item <7-> Revient à générer selon:
+    %
+    \item<6-> Intuitivement: générer des \coloredemph{prédictions} avec $f_\theta(x_0) \sim GP (0, k_\theta)$
+    ET garder ce qui fit aux data d'entraînement $[\tored{y}, \tored{\vectorx{x}}]$ et à \coloredemph{$x_0$}:
+    %
+    \only<7>{
+      $\underbrace{p(hypothèse | data)}_{\toblue{posterior}}
+      & = 
+      \frac{
+        \overbrace{p(data | hypothèse)}^{\tored{likelihood}}
+        \overbrace{p(hypothèse)}^{\topurple{prior}}
+      }{
+        \underbrace{p(data)}_{evidence}
+      }$}
+    %
+    \item <8-> Revient à générer selon:
       \begin{equation*}
-        \only<7->{
+        \only<8->{
           \overbrace{p(f_\theta | y, \vectorx{x}, x_0)}^{\toblue{posterior}}
         }
-        \only<8->{
+        \only<9->{
           =
           \frac{
             \overbrace{p(y | \vectorx{x}, f_\theta)}^{\tored{likelihood}}
@@ -686,26 +669,25 @@ Thales Services Numériques,
           )
         }
       \end{equation*}
-    \item <9-> $m_{*}, k_{*, \theta}$ ?
   \end{itemize}
 \end{frame}
 
 \begin{frame}{\subsecname}
-
   \begin{itemize}
+    \item <1-> $m_{*}, k_{*, \theta}$ ?
     \item \only<1->{$p(f_\theta | y, \vectorx{x}) = GP(m_{*}, k_{*, \theta})$}
      % posterior mean
     \item \only<2->{$m_*(\toblue{x_0}) = 0 +$}
     \only<3->{$\vectorx{k}_{\toblue{0}}^\top \tored{\matrixx{K}_{y}}^{-1} \tored{y}$}
      % posterior covariance
-    \item \only<4->{$k_{*, \theta} (\toblue{x_0}, x_0^\prime) = k_\theta (\toblue{x_0}, \toblue{x_0}) -$}
+    \item \only<4->{$k_{*, \topurple{\theta}} (\toblue{x_0}, x_0^\prime) = k_\topurple{\theta} (\toblue{x_0}, \toblue{x_0}) -$}
     \only<5->{$\vectorx{k}_{\toblue{0}}^\top \tored{\matrixx{K}_{y}}^{-1} \vectorx{k}_{\toblue{0}}$}
     %
     \item<6-> La distribution de probabilités de la prédiction $y_0$ (connaissant les data d'entraînement) est caractérisée !
     %
-    \item<6-> Pour n'importe quel $x_0$: accès à la prédiction moyenne, son incertitude (intervalle de confiance), quantiles, etc., de $y_0$
+    \item<6-> Pour n'importe quel $x_0$: accès à la prédiction moyenne, incertitude (intervalle de confiance), quantiles, etc., de $y_0$
     %
-    \item<7-> La prédiction dépend aussi de $\theta$ (hyperparamètre) !
+    \item<7-> La prédiction dépend aussi de $\topurple{\theta}$ (hyperparamètre) !
   \end{itemize}
 \end{frame}
 
@@ -714,7 +696,7 @@ Thales Services Numériques,
     \item<1-> Meilleur $\theta$, maximum de: $\tored{likelihood}(\theta) = p(y | \vectorx{x}, f_\theta)$
     %
     \item<2-> $\leftrightarrow$ $\theta$ telle que les données d'entraînement $\tored{y}$
-     soient le plus probables au regard de l'hypothèse $f_\theta$ et des inputs $\tored{\vectorx{x}}$
+     soient le plus probables au regard de l'\topurple{hypothèse} $f_\theta$ et des inputs $\tored{\vectorx{x}}$
     % \item<3-> 
       \begin{equation*}
         \log p(y | \vectorx{x}, f_\theta) =
@@ -723,31 +705,46 @@ Thales Services Numériques,
         - \underbrace{ \frac{1}{2} \log | \tored{\matrixx{K}_{y}} |}_{pénalité}
         - \frac{n}{2} \log 2 \pi
       \end{equation*}    
-    \item<3-> Rappel: $\tored{\matrixx{K}_{y}}$ matrice $n \times n$ des $k_\theta(x_i, x_j)$
+    \item<3-> Rappel: $\tored{\matrixx{K}_{y}}$ matrice $n \times n$ des $k_\theta(x_i, x_j) = \mathbb{C}(f_\theta(x_i), f_\theta(x_j))$
     \item<4-> Apprentissage de $\theta$ par descente de gradient de $- \log \tored{likelihood}$ (large sous-domaine de la communauté GP)
   \end{itemize}
 \end{frame}
 
+\begin{frame}\frametitle{\secname}
+  Méthodo générale:
+  \begin{enumerate}
+    \item Collecter des données: $\{y_i, x_i\}_{1 \leq i \leq n} = [\tored{y}, \tored{\vectorx{x}}]$
+    \pause
+    \item Formuler des \topurple{hypothèses}: choisir/combiner un/des kernels $\topurple{k}_{\theta}$
+    \pause
+    \item \tored{Entraîner} le modèle: estimer les hyperparamètres $\tored{\theta}$
+    \pause
+    \item \toblue{Prédire} ("\emph{inférence}"): évaluer $m_*$ et $k_{*, \theta}$, générer des données, etc.
+    \pause
+    \item Critique / évaluation du modèle
+  \end{enumerate}
+\end{frame}
+
 % Example
-\subsection{Exemple}
+\subsection{Exemples}
 \begin{frame}{\subsecname}
-  
   \begin{itemize}
     \item\tored{train} = $\{y_i, x_i\}$ où $y_i = g(x_i) = - \cos(3 \pi x_i) + \frac{1}{4} \sin(8 \pi x_i)$
     %
+    \item $g$ inconnue
       \begin{figure}
         \includegraphics{gp_1D_example_noisefree_data.pdf}
       \end{figure}
     %[y_0]
-    \item $f_\theta(x_0 = 0.8) = \tilde{y}_0$ ?
+    \item $f_\theta(x_0 = 0.8) = \tilde{y}_0$ ? (\coloredemph{interpolation})
   \end{itemize}
 \end{frame}
 
 \begin{frame}{\subsecname}
   \begin{itemize}
-    \item<1-> hypothèse: $f$ est lisse $\rightarrow$ kernel exponentiel quadratique
+    \item<1-> \topurple{Hypothèses}: $y_i = f(x_i)$ et $f$ est lisse $\rightarrow$ kernel exponentiel quadratique
     %
-    \item $k_\theta (x, x^\prime) = \sigma_k e^{- \frac{(x - x^\prime)^2}{2 \ell^2} }, \theta = [\sigma_k, \ell]$
+    \item $k_\theta (x, x^\prime) = \sigma_k^2 e^{- \frac{(x - x^\prime)^2}{2 \ell^2} }, \theta = [\sigma_k, \ell]$
     %
     \item<2-> $[\sigma_k, \ell]$ inconnus (ici fixés arbitrairement)
       \begin{figure}
@@ -757,12 +754,13 @@ Thales Services Numériques,
 \end{frame}
 
 \begin{frame}{\subsecname}
+  \tored{Entraînement}
   \begin{itemize}
     \item<1-> $\theta$ ? minimisation de $-\log$ likelihood: $\sigma_k \approx 0.92, \ell \approx 0.11$
     %
     \item<2-> $m_{*}, k_{*, \theta}$ et $\theta$ appris
     % 
-    \item<3-> Génération selon la distribution posterior $GP( m_{*}, k_{*, \theta} )$
+    \item<3-> \topurple{Inférence}: générer selon la distribution posterior $GP( m_{*}, k_{*, \theta} )$
       \begin{figure}
         \includegraphics{gp_1D_example_noisefree_pred.pdf}
       \end{figure}
@@ -770,10 +768,11 @@ Thales Services Numériques,
 \end{frame}
 
 \begin{frame}{\subsecname}
+  \toblue{Inférence}
   \begin{itemize}
-    \item $\tilde{y}_0$: médiane des tirages aléatoires de $p(f_\theta | y, \vectorx{x}, x_0) = GP(m_{*}, k_{*, \theta})$ en $x_0 =0.8$
+    \item $\tilde{y}_0$: moyenne de $p(f_\theta | y, \vectorx{x}, x_0) = GP(m_{*}, k_{*, \theta})$ en $x_0 =0.8$
     %
-    \item med $\pm \frac{\sigma}{2}$: $ = -0.22 \pm 0.16$ ($95\%$)
+    \item $m_{*}(x_0) \pm \frac{1}{2} \sqrt{k_{*, \theta}(x_0, x_0)}$: $ = -0.22 \pm 0.16$ ($95\%$)
   \end{itemize}
 \end{frame}
 
@@ -788,39 +787,58 @@ Thales Services Numériques,
   \end{itemize}
 \end{frame}
 
-% \item<6-> Règle de Bayes:
-%       \begin{equation*}
-%         \begin{split}
-%         % informal way
-%         \only<7>{
-%           p(hypothèse | data)
-%           & = \frac{
-%             p(data, hypothèse)
-%           }{
-%             p(data)
-%           } \\
-%           & =
-%           \frac{
-%             \overbrace{p(data | hypothèse)}^{\textcolor{red}{likelihood}}
-%             \overbrace{p(hypothèse)}^{\textcolor{red}{prior}}
-%           }{
-%             \underbrace{p(data)}_{\textcolor{red}{evidence}}
-%           }
-%         }
-%         % formal way
-%         \only<8>{
-%           p(f_\theta | \vectorx{x}, y)
-%           & =
-%           \frac{
-%             \overbrace{p(y | \vectorx{x}, f_\theta)}^{\textcolor{red}{likelihood}}
-%             \overbrace{p(f_\theta)}^{\textcolor{red}{prior}}
-%           }{
-%             p(y | \vectorx{x})
-%           } \\
-%           & =
-%           GP()
-%         }
-%         \end{split}
+\begin{frame}{\subsecname}
+  \begin{itemize}
+    \item \topurple{Hypothèses} précédentes: "pas de bruit" (hypothèse forte), "lisse" (hypothèse large)
+    %
+    \pause
+    \item \topurple{Hypothèses} plus réalistes ?
+    %
+    \pause
+    \item Bruit de mesure, lisse, quasi-périodique: $k_{\theta} = k_{\epsilon} + \sigma_{exp2} k_{exp2} \times \sigma_{per} k_{per}$
+      \begin{itemize}
+        \item $k_{\epsilon}$: bruit
+        \item $k_{exp2} \times k_{per}$: Lisse ET quasi-périodique
+        \item $\theta = [\sigma_{\epsilon}, \sigma_{exp2}, \ell, \sigma_{per}, f_0, \ell_{per}]$
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{\subsecname}
+  \begin{itemize}
+    \item Même données + bruit blanc ($\sigma = 0.3$)
+    \item $f_\theta(x_0 = 0.8) = \tilde{y}_0$ (\coloredemph{smoothing}) ?
+  \end{itemize}
+  \begin{figure}
+    \includegraphics{gp_1D_example_noisy_data.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{\subsecname}
+  \begin{itemize}
+    \item<1-> $\theta$ ? minimisation de $-\log$ likelihood:
+    $\sigma_{\epsilon} \approx 0.24$, $\sigma_{exp2} \approx 1$, $\ell \approx 1$, $\sigma_{per} \approx 1$, $T_0 = 0.7$, $\ell_{per} \approx = 1$
+    %
+    \item<2-> $m_{*}, k_{*, \theta}$ et $\theta$ appris
+    % 
+    \item<3-> Génération selon la distribution posterior $GP( m_{*}, k_{*, \theta} )$
+      \begin{figure}
+        \includegraphics{gp_1D_example_noisy_pred_meanvar.pdf}
+      \end{figure}
+  \end{itemize}
+\end{frame}
+\begin{frame}{\subsecname}
+  \begin{itemize}
+    \item<1-> Pour $x > 1.5$ ? (\coloredemph{forecast})
+    \item<1-> Comparaison des deux versions 
+      \begin{figure}
+        \centering
+        \subfigure{\includegraphics[scale=0.8]{gp_1D_example_noisefree_pred_meanvar_forecast.pdf}}
+        \subfigure{\includegraphics[scale=0.8]{gp_1D_example_noisy_pred_meanvar_forecast.pdf}}
+        \caption{(a): sans bruit, lisse, NON périodique (b): bruit, lisse et périodique}
+      \end{figure}
+  \end{itemize}
+\end{frame}
 
 %========== Motivations ==================%
 \section{Motivations}

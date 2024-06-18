@@ -2,9 +2,11 @@ import numpy as np
 from matplotlib import pyplot as plt
 from mogptk import Model as Model_mogptk
 from mogptk import Exact
-from mogptk import LoadFunction
+from mogptk import LoadFunction, TransformStandard
 from mogptk.gpr.mean import ConstantMean
-from mogptk.gpr.singleoutput import MaternKernel, SquaredExponentialKernel
+from mogptk.gpr.kernel import AddKernel, MulKernel
+from mogptk.gpr.singleoutput import MaternKernel, \
+    SquaredExponentialKernel, PeriodicKernel, WhiteKernel, LocallyPeriodicKernel
 from torch import manual_seed
 from utils import get_figsize, gen_1D_gp
 from constants import columnwidth
@@ -16,11 +18,12 @@ manual_seed(3004666)
 #-------------------#
 # input space
 a, b = 0.0, 1.5
-b_forecast = 3.0
 nt = 10**3
 tt = np.linspace(a, b, num=nt)
+b_forecast = 3.0
 tt_forecast = np.r_[tt, np.arange(b, b_forecast, step=tt[1]-tt[0])]
-N_gp = 10 # number of GP draws
+N_gp = 5 # number of GP draws
+sigma_noise = 3e-1
 
 # output space
 g = lambda ti: -1 * np.cos(3*np.pi*ti) + 0.25 * np.sin(8*np.pi*ti)
@@ -29,14 +32,16 @@ mogptk_dataset = LoadFunction(
     f=g,
     start=a, end=b,
     n=n,
-    var=0.0,
+    var=sigma_noise**2,
     name='sin+cos'
 )
+mogptk_dataset.transform(TransformStandard())
 
 mogptk_dataset.remove_randomly(pct=0.70)
 mogptk_dataset.set_prediction_data(X=[0.80])
 
 x_tr, y_tr = mogptk_dataset.get_train_data()
+print(f'train variance = {y_tr.var()}')
 n_tr = y_tr.size
 x_0 = mogptk_dataset.get_prediction_data()
 x_0 = x_0[0]
@@ -45,20 +50,37 @@ y_0 = g(x_0)
 #-------------------#
 #   Train/predict
 #-------------------#
+# # here we cheat, we sample from a known GP
 mean = ConstantMean()
-mean.bias.assign(value=[0.0], train=False)
+mean.bias.assign(value=[0.0], train=None)
 
-kernel = SquaredExponentialKernel(input_dims=1, active_dims=[0])
+k_exp2 = SquaredExponentialKernel(input_dims=1)
+k_exp2.lengthscale.assign(lower=1.0, upper=10)
+k_per = PeriodicKernel(input_dims=1)
+k_per.lengthscale.peg(k_exp2.lengthscale)
+kernel = MulKernel(k_exp2, k_per)
+
+k_noise = WhiteKernel(input_dims=1)
+
+kernel = AddKernel(kernel, k_noise)
+
 model = Model_mogptk(
     mogptk_dataset,
-    inference=Exact(data_variance=[0.0]*n_tr), # noise-free data
+    inference=Exact(data_variance=[0.0]*n_tr),
     kernel=kernel,
     mean=mean
 )
+k_noise.magnitude.peg(model.gpr.likelihood.scale)
 
 # train this very simple model
-model.train(method='lbfgs', lr=1e-2, verbose=True)
+model.train(method='adam', lr=5e-3, iters=10**4, verbose=True)
 model.print_parameters()
+
+print(
+    f'noise std estimated = {
+        np.sqrt(k_noise.magnitude.numpy() + model.gpr.likelihood.scale.numpy())
+    }'
+)
 
 # prior samples
 yy_prior = gen_1D_gp(model=model, x=tt, N=N_gp)
@@ -75,9 +97,9 @@ post_mean, post_var = model.gpr.predict_f(tt, full=False)
 post_mean = post_mean.ravel()
 post_var = post_var.ravel()
 
-#posterior forecast
-post_mean_forecast, post_var_forecast = model.gpr.predict_f(tt_forecast, full=False)
-post_mean_forecast = post_mean_forecast.ravel()
+# posterior mean anv variance for x>1.5
+post_mean_forcast, post_var_forecast = model.gpr.predict_f(tt_forecast, full=False)
+post_mean_forcast = post_mean_forcast.ravel()
 post_var_forecast = post_var_forecast.ravel()
 
 #-------------------#
@@ -121,7 +143,7 @@ legend = ax.legend(
 )
 
 fig.savefig(
-    './images/gp_1D_example_noisefree_data.pdf',
+    './images/gp_1D_example_noisy_data.pdf',
     bbox_inches='tight'
 )
 
@@ -152,7 +174,7 @@ ax_prior.legend(
 )
 
 fig_prior.savefig(
-    './images/gp_1D_example_noisefree_data_prior.pdf',
+    './images/gp_1D_example_noisy_data_prior.pdf',
     bbox_inches='tight'
 )
 
@@ -174,14 +196,14 @@ ax.plot(
 )
 
 # posterior samples on the whole input space
-for k in range(N_gp):
-    ax.plot(
-        tt, yy_pred[k],
-        linestyle='solid', linewidth=0.5,
-        color='orange', alpha=0.2,
-        marker=None,
-        label=r'$f_{\theta} | y, x  \sim GP(m_{*}, k_{*,\theta}) $' if k ==1 else None
-    )
+# for k in range(N_gp // 2):
+postsamples_plot = ax.plot(
+    tt, yy_pred.T,
+    linestyle='solid', linewidth=0.5,
+    color='orange', alpha=0.2,
+    marker=None,
+    label=[r'$f_{\theta} | y, x  \sim GP(m_{*}, k_{*,\theta}) $' if k ==1 else None for k in range(N_gp)]
+)
 
 # decoration
 legend = ax.legend(
@@ -191,7 +213,7 @@ legend = ax.legend(
 )
 
 fig.savefig(
-    './images/gp_1D_example_noisefree_pred.pdf',
+    './images/gp_1D_example_noisy_pred.pdf',
     bbox_inches='tight'
 )
 
@@ -200,17 +222,18 @@ fig.savefig(
 # mean and variance
 # on the whole input space
 #--------#
+# [l.remove() for l in postsamples_plot]
 post_mean_plot = ax.plot(
     tt, post_mean,
     linestyle='solid', linewidth=1.0,
-    color='tab:cyan', alpha=0.75,
+    color='tab:cyan', alpha=0.85,
     label=r'$m_{*}(x)$'
 )
 
 post_var_plot = ax.fill_between(
     tt,
     post_mean - np.sqrt(post_var), post_mean + np.sqrt(post_var),
-    color='tab:cyan', alpha=0.150,
+    color='tab:cyan', alpha=0.50,
     label=r'$k_{*,\theta}(x, x)$'
 )
 
@@ -222,11 +245,11 @@ legend = ax.legend(
 )
 
 fig.savefig(
-    './images/gp_1D_example_noisefree_pred_meanvar.pdf',
+    './images/gp_1D_example_noisy_pred_meanvar.pdf',
     bbox_inches='tight'
 )
 #--------#
-# posterior forecast x>1.5
+# posterior of the forecast x>1.5
 #--------#
 [l.remove() for l in post_mean_plot]
 [post_var_plot.remove()]
@@ -234,18 +257,10 @@ fig.savefig(
 ax.set_xlim(a - 0.1, b_forecast + 0.1)
 
 ax.plot(
-    tt_forecast, post_mean_forecast,
+    tt_forecast, post_mean_forcast,
     linestyle='solid', linewidth=1.0,
-    color='tab:cyan', alpha=0.75,
+    color='tab:cyan', alpha=0.85,
     label=r'$m_{*}(x)$'
-)
-
-ax.fill_between(
-    tt_forecast,
-    post_mean_forecast - np.sqrt(post_var_forecast),
-    post_mean_forecast + np.sqrt(post_var_forecast),
-    color='tab:cyan', alpha=0.150,
-    label=r'$k_{*,\theta}(x, x)$'
 )
 
 true_fun_plot = ax.plot(
@@ -255,14 +270,15 @@ true_fun_plot = ax.plot(
     label=r'$g$'
 )
 
-legend.remove()
-legend = ax.legend(
-    loc='lower right', bbox_to_anchor=(0.99, 0.99),
-    labelspacing=0.1, ncols=2,
-    frameon=False, fontsize='xx-small'
+ax.fill_between(
+    tt_forecast,
+    post_mean_forcast - np.sqrt(post_var_forecast),
+    post_mean_forcast + np.sqrt(post_var_forecast),
+    color='tab:cyan', alpha=0.50,
+    label=r'$k_{*,\theta}(x, x)$'
 )
 
 fig.savefig(
-    './images/gp_1D_example_noisefree_pred_meanvar_forecast.pdf',
+    './images/gp_1D_example_noisy_pred_meanvar_forecast.pdf',
     bbox_inches='tight'
 )
