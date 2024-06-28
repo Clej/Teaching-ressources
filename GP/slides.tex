@@ -5,6 +5,8 @@
 \usepackage[absolute, overlay]{textpos}
 \useoutertheme{infolines} 
 % \usepackage{csquotes}
+\usepackage{caption}
+\usepackage{cancel}
 \usepackage{enumerate}
 \usepackage[french]{babel}
 \usepackage{xcolor}
@@ -51,7 +53,7 @@
 \setbeamercolor{title in head/foot}{bg=internationalblue}
 \setbeamercolor{author in head/foot}{bg=dodgerblue}
 
-\title[Introduction aux Processus Gaussiens]{Introduction aux Processus Gaussiens (1/3)}
+\title[Introduction aux Processus Gaussiens]{Introduction aux Processus Gaussiens (1/2)}
 \subtitle{Application aux données spatio-temporelles}
 \institute[]{}
 % \titlegraphic{
@@ -93,13 +95,18 @@ Thales Services Numériques,
   \begin{itemize}
     \item Pédagogique (pas un état de l'art)
     \pause
-    \item Comprendre la philosophie (Bayésienne) des processus Gaussien (GP)
+    \item Comprendre la philosophie (Bayésienne et non-paramétrique) des processus Gaussien (GP)
     \pause
     \item Comprendre l'interêt probabiliste/prédictifs des $GP$
     \pause
-    \item Comprendre les limites des $GP$
+    \item Comprendre les limites des $GP$ "naïfs"
+  \end{itemize}
+  %
+  De quoi va-t-on parler ?
+  \begin{itemize}
+    \item Théorie: lois Gaussiennes, noyaux, probabilités conditionnelles
     \pause
-    \item 
+    \item Applicatif: forecasting, prédiction d'incertitude, complétion de valeurs manquantes, lissage
   \end{itemize}
 \end{frame}
 
@@ -274,13 +281,15 @@ Thales Services Numériques,
     \quad
     \matrixx{\Sigma}
     =
-    \begin{pmatrix}
-      1.5 & 0.99 & \color{lightgray}0.98 & \color{lightgray}0.96 & \color{lightgray}0.94 \\
-      0.99 & 1.5 & \color{lightgray}0.99 & \color{lightgray}0.98 & \color{lightgray}0.96 \\
-      \color{lightgray}0.98 & \color{lightgray}0.99 & \color{lightgray}1.5 & \color{lightgray}0.99 & \color{lightgray}0.98 \\
-      \color{lightgray}0.96 & \color{lightgray}0.98 & \color{lightgray}0.99 & \color{lightgray}1.5 & \color{lightgray}0.99 \\
-      \color{lightgray}0.94 & \color{lightgray}0.96 & \color{lightgray}0.98 & \color{lightgray}0.99 & \color{lightgray}1.5
-      \end{pmatrix}
+    \scalemath{0.5}{
+      \begin{pmatrix}
+        1.5 & 0.99 & \color{lightgray}0.98 & \color{lightgray}0.96 & \color{lightgray}0.94 \\
+        0.99 & 1.5 & \color{lightgray}0.99 & \color{lightgray}0.98 & \color{lightgray}0.96 \\
+        \color{lightgray}0.98 & \color{lightgray}0.99 & \color{lightgray}1.5 & \color{lightgray}0.99 & \color{lightgray}0.98 \\
+        \color{lightgray}0.96 & \color{lightgray}0.98 & \color{lightgray}0.99 & \color{lightgray}1.5 & \color{lightgray}0.99 \\
+        \color{lightgray}0.94 & \color{lightgray}0.96 & \color{lightgray}0.98 & \color{lightgray}0.99 & \color{lightgray}1.5
+        \end{pmatrix}
+    }
   \end{equation*}
   %
   \begin{figure}[ht]
@@ -307,26 +316,28 @@ Thales Services Numériques,
     \quad
     \matrixx{\Sigma}
     =
-    \begin{pmatrix}
-      1.5 & 0.99 & 0.98 & 0.96 & 0.94 \\
-      0.99 & 1.5 & 0.99 & 0.98 & 0.96 \\
-      0.98 & 0.99 & 1.5 & 0.99 & 0.98 \\
-      0.96 & 0.98 & 0.99 & 1.5 & 0.99 \\
-      0.94 & 0.96 & 0.98 & 0.99 & 1.5
-      \end{pmatrix}
+    \scalemath{0.5}{
+      \begin{pmatrix}
+        1.5 & 0.99 & 0.98 & 0.96 & 0.94 \\
+        0.99 & 1.5 & 0.99 & 0.98 & 0.96 \\
+        0.98 & 0.99 & 1.5 & 0.99 & 0.98 \\
+        0.96 & 0.98 & 0.99 & 1.5 & 0.99 \\
+        0.94 & 0.96 & 0.98 & 0.99 & 1.5
+        \end{pmatrix}
+    }
   \end{equation*}
   %
-  Chaque courbe est un tirage de $\mathcal{N}(\vectorx{\mu} , \matrixx{\Sigma})$
   \begin{figure}[ht]
-    \includegraphics[scale=0.3]{gaussian_5d_valuevsindex.pdf}
-    \caption{$8$ échantillons, dimensions $j=1, \dots, 5$}
+    \includegraphics[scale=0.4]{gaussian_5d_valuevsindex.pdf}
+    \caption{$8$ échantillons, dimensions $j=1, \dots, 5$.
+    Chaque courbe est un tirage de $\mathcal{N}(\vectorx{\mu} , \matrixx{\Sigma})$
+    }
   \end{figure}
 \end{frame}
 
 % d=50, high correlation: scatter and index plots
 \begin{frame}{\subsecname}
-  Cas $d=50$:
-  %
+  Cas $d=50$:%
   \begin{equation*}
     \vectorx{\mu}
     =
@@ -338,7 +349,7 @@ Thales Services Numériques,
     \quad
     \matrixx{\Sigma}
     =
-    \scalemath{0.65}{
+    \scalemath{0.5}{
       \begin{pmatrix}
         1.5 & 0.998 & 0.993 & 0.986 & 0.975 & 0.962 & 0.946 & 0.927 & \cdots \\
         0.998 & 1.5 & 0.998 & 0.993 & 0.986 & 0.975 & 0.962 & 0.946 & \cdots \\
@@ -351,12 +362,11 @@ Thales Services Numériques,
         \hdots & \hdots & \hdots & \hdots & \hdots & \hdots & \hdots & \hdots & 1.5
       \end{pmatrix}
     }
-  \end{equation*}
-  Chaque courbe est un tirage de $\mathcal{N}(\vectorx{\mu} , \matrixx{\Sigma})$
-  %
-  \begin{figure}[ht]
-    \includegraphics[scale=0.3]{gaussian_50d_valuevsindex.pdf}
-    \caption{$8$ échantillons, dimensions $j=1, \dots, 50$}
+  \end{equation*}%
+  \begin{figure}[h]
+    \includegraphics[scale=0.4]{gaussian_50d_valuevsindex.pdf}%
+    \caption{$8$ échantillons, dimensions $j=1, \dots, 50$.
+    Chaque courbe est un tirage de $\mathcal{N}(\vectorx{\mu} , \matrixx{\Sigma})$}
   \end{figure}
 \end{frame}
 %
@@ -364,8 +374,7 @@ Thales Services Numériques,
 % GP definition
 \begin{frame}{\subsecname}
   
-  Cas $d=\infty$: chaque courbe est une \coloredemph{collection infinie} de valeurs, que l'on peut voir comme une fonction:
-  %
+  Cas $d=\infty$: chaque courbe est une \coloredemph{collection infinie} de valeurs, que l'on peut voir comme une fonction:%
   \begin{enumerate}
     \item $\vectorx{\mu}$: vecteur de taille infinie $\Leftrightarrow$ fonction moyenne $\mathbb{E}(y(x)) = m(\vectorx{x})$
     \item $\matrixx{\Sigma}$: matrice de taille infinie $\Leftrightarrow$  noyau de covariance ou "\coloredemph{kernel}"
@@ -502,7 +511,7 @@ Thales Services Numériques,
   % 
   \begin{itemize}
     \item<1-> kernel locallement-périodique:
-    $k (t, t^\prime) = e^{- \frac{2 \sin^2(\pi (t - t^\prime) / p)}{\ell^2}}$
+    $k (t, t^\prime) = e^{- \frac{2 \sin^2(\pi (t - t^\prime) / T_0)}{\ell^2}}$
     %
     \item<1-> Génère des $y$ périodiques ET lisses
   \end{itemize}
@@ -585,17 +594,26 @@ Thales Services Numériques,
           \rho & \Sigma_{2}
         \end{pmatrix}
     )$%
-    \item<3-> $
+    \item<3-6> $
     p(y_2 | y_1 = u) = \mathcal{N} (
-      \mu_2 \coloredemph{+ \rho \Sigma_1^{-1} (u - \mu_1)},
-      \Sigma_2 \coloredemph{- \rho^2 \Sigma_1^{-1}}
+      \mu_2 \tored{+ \rho \Sigma_1^{-1} (u - \mu_1)},
+      \Sigma_2 \tored{- \rho^2 \Sigma_1^{-1}}
     )$%
-  \end{itemize}
+  \end{itemize}%
   \begin{figure}
+    \centering
     \only<4>{\includegraphics{gaussian_2d_rho_null_with_conditional.pdf}}%
     \only<5>{\includegraphics{gaussian_2d_rho_low_with_conditional.pdf}}%
     \only<6>{\includegraphics{gaussian_2d_rho_high_with_conditional.pdf}}%
   \end{figure}
+  \only<7>{
+    $
+    p(y_2 | y_1 = u) = \mathcal{N} (
+      \mu_2 \tored{+ \rho \Sigma_1^{-1} (u - \mu_1)},
+      \underbrace{\Sigma_2 \tored{- \rho^2 \Sigma_1^{-1}}}_{\geq 0}%
+    )$\\
+    Conditionner $y_2 | y_1$ $\leftrightarrow$ réduire l'incertitude (variance) de $y_2$
+  }%
 \end{frame}
 
 % Posterior of a GP
@@ -673,6 +691,7 @@ Thales Services Numériques,
 \end{frame}
 
 \begin{frame}{\subsecname}
+  Inférence:
   \begin{itemize}
     \item <1-> $m_{*}, k_{*, \theta}$ ?
     \item \only<1->{$p(f_\theta | y, \vectorx{x}) = GP(m_{*}, k_{*, \theta})$}
@@ -687,15 +706,18 @@ Thales Services Numériques,
     %
     \item<6-> Pour n'importe quel $x_0$: accès à la prédiction moyenne, incertitude (intervalle de confiance), quantiles, etc., de $y_0$
     %
-    \item<7-> La prédiction dépend aussi de $\topurple{\theta}$ (hyperparamètre) !
+    \item<7-> Modèle de prédiction = \{ data d'\tored{entraînement}, hyperparamètres \}
+    %
+    \item<8-> La prédiction dépend aussi de $\topurple{\theta}$ (hyperparamètre) !
   \end{itemize}
 \end{frame}
 
 \begin{frame}{\subsecname}
+  Entraînement:
   \begin{itemize}
-    \item<1-> Meilleur $\theta$, maximum de: $\tored{likelihood}(\theta) = p(y | \vectorx{x}, f_\theta)$
+    \item<1-> Meilleur $\theta$ ?
     %
-    \item<2-> $\leftrightarrow$ $\theta$ telle que les données d'entraînement $\tored{y}$
+    \item<2-> Maximum de: $\tored{likelihood}(\theta) = p(y | \vectorx{x}, f_\theta)$ $\leftrightarrow$ $\theta$ telle que les données d'entraînement $\tored{y}$
      soient le plus probables au regard de l'\topurple{hypothèse} $f_\theta$ et des inputs $\tored{\vectorx{x}}$
     % \item<3-> 
       \begin{equation*}
@@ -729,7 +751,7 @@ Thales Services Numériques,
 \subsection{Exemples}
 \begin{frame}{\subsecname}
   \begin{itemize}
-    \item\tored{train} = $\{y_i, x_i\}$ où $y_i = g(x_i) = - \cos(3 \pi x_i) + \frac{1}{4} \sin(8 \pi x_i)$
+    \item\tored{train} = $\{y_i, x_i\}_{i \leq n}$ où $y_i = g(x_i) = - \cos(3 \pi x_i) + \frac{1}{4} \sin(8 \pi x_i)$
     %
     \item $g$ inconnue
       \begin{figure}
@@ -760,7 +782,7 @@ Thales Services Numériques,
     %
     \item<2-> $m_{*}, k_{*, \theta}$ et $\theta$ appris
     % 
-    \item<3-> \topurple{Inférence}: générer selon la distribution posterior $GP( m_{*}, k_{*, \theta} )$
+    \item<3-> \toblue{Inférence}: générer selon la distribution posterior $GP( m_{*}, k_{*, \theta} )$
       \begin{figure}
         \includegraphics{gp_1D_example_noisefree_pred.pdf}
       \end{figure}
@@ -768,7 +790,7 @@ Thales Services Numériques,
 \end{frame}
 
 \begin{frame}{\subsecname}
-  \toblue{Inférence}
+  \toblue{}{Inférence}
   \begin{itemize}
     \item $\tilde{y}_0$: moyenne de $p(f_\theta | y, \vectorx{x}, x_0) = GP(m_{*}, k_{*, \theta})$ en $x_0 =0.8$
     %
@@ -795,11 +817,11 @@ Thales Services Numériques,
     \item \topurple{Hypothèses} plus réalistes ?
     %
     \pause
-    \item Bruit de mesure, lisse, quasi-périodique: $k_{\theta} = k_{\epsilon} + \sigma_{exp2} k_{exp2} \times \sigma_{per} k_{per}$
+    \item Bruit de mesure $y_i = f_{\theta}(x_i) + \epsilon$, lisse, quasi-périodique: $k_{\theta} = k_{\epsilon} + \sigma_{exp2} k_{exp2} \times \sigma_{per} k_{per}$
       \begin{itemize}
         \item $k_{\epsilon}$: bruit
         \item $k_{exp2} \times k_{per}$: Lisse ET quasi-périodique
-        \item $\theta = [\sigma_{\epsilon}, \sigma_{exp2}, \ell, \sigma_{per}, f_0, \ell_{per}]$
+        \item $\theta = [\sigma_{\epsilon}, \sigma_{exp2}, \ell, \sigma_{per}, T_0, \ell_{per}]$
       \end{itemize}
   \end{itemize}
 \end{frame}
@@ -830,77 +852,325 @@ Thales Services Numériques,
 \begin{frame}{\subsecname}
   \begin{itemize}
     \item<1-> Pour $x > 1.5$ ? (\coloredemph{forecast})
-    \item<1-> Comparaison des deux versions 
+    \item<2-> Comparaison des deux hypothèses
       \begin{figure}
         \centering
         \subfigure{\includegraphics[scale=0.8]{gp_1D_example_noisefree_pred_meanvar_forecast.pdf}}
         \subfigure{\includegraphics[scale=0.8]{gp_1D_example_noisy_pred_meanvar_forecast.pdf}}
-        \caption{(a): sans bruit, lisse, NON périodique (b): bruit, lisse et périodique}
+        \caption{(a): sans bruit, lisse (b): bruit, lisse et périodique}
       \end{figure}
   \end{itemize}
 \end{frame}
 
-%========== Motivations ==================%
-\section{Motivations}
-\subsection{Tractabilité mathématique}
+% %========== Motivations ==================%
+% \section{Motivations}
+% \subsection{Tractabilité mathématique}
 
-% Mathematical properties
-\begin{frame}{\subsecname}
+% % Mathematical properties
+% \begin{frame}{\subsecname}
   
-$y_1 \sim GP$, $y_2 \sim GP$
-\begin{itemize}
-  \pause
-  \item Somme: $y_1 + y_2 \sim GP$
-  %
-  \pause
-  \item Opérateur linéaire $\mathcal{L}$ (gradient, $\int$, eq-diff linéaire, etc.):
-  $\mathcal{L}y_1 \sim GP$
-  % 
-  \item Bayésien $\implies$ probabiliste: accès à l'incertitude de prédiction
-  \pause
-  \item Conditionnement Bayésien: $y_1 | y_2 \sim GP$ (\coloredemph{important}, détails plus tard)
-  % 
-  \pause
-  \item Connaissant uniquement moyenne et covariance de $\vectorx{u}$ et $\vectorx{v}$,
-  on montre que la meilleure prédiction (en moyenne) est Gaussienne (maximum d'entropie).
-\end{itemize}
-\end{frame}
+% $y_1 \sim GP$, $y_2 \sim GP$
+% \begin{itemize}
+%   \pause
+%   \item Somme: $y_1 + y_2 \sim GP$
+%   %
+%   \pause
+%   \item Opérateur linéaire $\mathcal{L}$ (gradient, $\int$, eq-diff linéaire, etc.):
+%   $\mathcal{L}y_1 \sim GP$
+%   % 
+%   \item Bayésien $\implies$ probabiliste: accès à l'incertitude de prédiction
+%   \pause
+%   \item Conditionnement Bayésien: $y_1 | y_2 \sim GP$ (\coloredemph{important}, détails plus tard)
+%   % 
+%   \pause
+%   \item Connaissant uniquement moyenne et covariance de $\vectorx{u}$ et $\vectorx{v}$,
+%   on montre que la meilleure prédiction (en moyenne) est Gaussienne (maximum d'entropie).
+% \end{itemize}
+% \end{frame}
 
-% Non-parametric
-\subsection{Non-paramétrique}
-\begin{frame}{\subsecname}
+% % Non-parametric
+% \subsection{Non-paramétrique}
+% \begin{frame}{\subsecname}
   
-    \begin{itemize}
-    \item Modèle \coloredemph{paramétrique}: modèle = des paramètres
-    \item Les données d'entraînement \coloredemph{conditionnent} les paramètres qui conditionnent eux-mêmes l'inférence (lien indirect)
-    \pause
-    \item Ex: régression linéaire, réseau de neurones (poids), K-means, RF
-    \pause
-    \item Modèle \coloredemph{non-paramétrique}: modèle = des données
-    \item Les données d'entraînement \coloredemph{conditionnent} l'inférence (lien direct)
-    \pause
-    \item Ex: SVM, k-NN, \coloredemph{GP} ($\coloredemph{\matrixx{K}_{fn}^{-1}}$)
-    \pause
-    %
-    \item Avantages du non-paramétrique:
-      \begin{enumerate}
-        \item apprentissage "direct" de la distribution des observations
-        \item théorie: $n \to \infty$: le modèle se trompe de moins en moins (pas toujours le cas du paramétrique)
-        \item inférence Gaussienne optimale\footnote{à partir de moyenne et covariance uniquement.}
-      \end{enumerate}
-    \pause
-    %
-    Inconvénivents du non-paramétrique:
-      \begin{enumerate}
-        \item risque d'overfit plus important
-        \item variance de prédiction sensible aux hyperparamètres du kernel
-        \item inférence plus coûteuse en général
-      \end{enumerate}
+%     \begin{itemize}
+%     \item Modèle \coloredemph{paramétrique}: modèle = des paramètres
+%     \item Les données d'entraînement \coloredemph{conditionnent} les paramètres qui conditionnent eux-mêmes l'inférence (lien indirect)
+%     \pause
+%     \item Ex: régression linéaire, réseau de neurones (poids), K-means, RF
+%     \pause
+%     \item Modèle \coloredemph{non-paramétrique}: modèle = des données
+%     \item Les données d'entraînement \coloredemph{conditionnent} l'inférence (lien direct)
+%     \pause
+%     \item Ex: SVM, k-NN, \coloredemph{GP} ($\coloredemph{\matrixx{K}_{fn}^{-1}}$)
+%     \pause
+%     %
+%     \item Avantages du non-paramétrique:
+%       \begin{enumerate}
+%         \item apprentissage "direct" de la distribution des observations
+%         \item théorie: $n \to \infty$: le modèle se trompe de moins en moins (pas toujours le cas du paramétrique)
+%         \item inférence Gaussienne optimale\footnote{à partir de moyenne et covariance uniquement.}
+%       \end{enumerate}
+%     \pause
+%     %
+%     Inconvénivents du non-paramétrique:
+%       \begin{enumerate}
+%         \item risque d'overfit plus important
+%         \item variance de prédiction sensible aux hyperparamètres du kernel
+%         \item inférence plus coûteuse en général
+%       \end{enumerate}
+%   \end{itemize}
+% \end{frame}
+
+%========== Application ==================%
+\subsection{Application: prédiction de température maritime}
+
+\begin{frame}{\subsecname}
+  \begin{itemize}
+    \item<1-> Séries temporelles de température sur la côté sud anglaise\footnote{\href{https://www.bramblemet.co.uk/(S(oqanew55msnsth55kvmmlxu2))/default.aspx}{Accessible ici}}:
+    4 stations sur 7 jours, $\Delta t \approx 5$min
+    \only<1>{
+        \begin{figure}
+        \includegraphics[scale=0.8]{ukcoast_map.png}
+      \end{figure}
+    }
+    \item<2-> But: estimation du bruit, forecasting et complétion de valeurs manquantes
+    \begin{figure}
+      \centering
+      \subfigure{\includegraphics[scale=0.125]{ukcoast_atmp.pdf}}
+      \subfigure{\includegraphics[scale=0.125]{ukcoast_atmp_spectrums.pdf}}
+    \end{figure}
   \end{itemize}
 \end{frame}
 
-%========== Application ==================%
-\section{Application}
+\begin{frame}{\subsecname}
+  \begin{itemize}
+    \item Série temporelle multivariéé, $GP$ défini de $\mathcal{X} = \mathbb{R}^{+}$ (temps) vers $\mathcal{Y} = \mathbb{R}^{4}$ (stations)
+    \pause
+    \item Hypothèses: les stations sont corrélées, bruitées et périodiques
+    %
+    \item Deux niveaux de corrélation: \tored{intra}-station et \toblue{inter}-station
+    \begin{equation*}
+      \center
+      \matrixx{K}(t, t^{\prime}) =
+      \begin{pmatrix}
+        \tored{k_{11}}(t, t^{\prime}) & \toblue{k_{12}}(t, t^{\prime}) & \toblue{k_{13}}(t, t^{\prime}) & \toblue{k_{14}}(t, t^{\prime}) \\
+        \vdots                & \tored{k_{22}}(t, t^{\prime}) & \toblue{k_{23}}(t, t^{\prime}) & \toblue{k_{24}}(t, t^{\prime}) \\
+        \vdots                & \vdots                & \ddots                & \vdots                        \\
+        \toblue{k_{41}}(t, t^{\prime}) & \hdots                & \hdots                & \tored{k_{44}}(t, t^{\prime})
+      \end{pmatrix}
+    \end{equation*}
+    %
+    \item Chaque station doit être prédite avec par elle-même + les autres
+  \end{itemize}
+\end{frame}
 
-\secction{GP pour les données non-Gaussiennes}
+\begin{frame}{\subsecname}
+  \begin{itemize}
+    \item Kernels "spectraux"\footnote{de la forme $k_{ij}(t, t^{\prime}) = 
+    \alpha_{ij} e^{- \frac{(|t - t^{\prime}| + \theta_{ij})^2}{2 \Sigma_{ij}}}
+    \cos((|t - t^{\prime}| + \theta_{ij})\mu_{ij} + \phi_{ij})$}: 
+    fit les puissances spectrales pour estimer les périodicités intra/inter et filtrer le bruit (hautes fréquences)
+    %
+    \item Entraînement: $n=644$, test: $n=6845$, $84$ hyperparamètres (notebook dispo: détails optim etc.)
+    %
+    \item \dots
+    %
+    \item $1500$ itérations (1min 23s)
+    %
+    \item Comparaison avec le même kernel sans corrélation inter-station
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{\subsecname}
+  \begin{table}[h]
+    \centering
+    \begin{subtable}%{0.1\linewidth}
+      \centering
+      \begin{tabular}{|l|c|c|c|}
+        \hline
+        & MAE & MAPE & RMSE \\
+        \hline
+        Bramble (NaN) & 2.10 & 10.37 & 2.79 \\
+        Camber (NaN) & 1.58 & 13.82 & 1.74 \\
+        Chi (forecast) & 1.76 & 12.53 & 2.01 \\
+        Soton (NaN) & 1.68 & 15.00 & 2.13 \\
+        \hline
+      \end{tabular}
+      \caption*{kernel \coloredemph{sans} corrélation inter-station}
+    \end{subtable}%
+    \begin{subtable}%{0.1\linewidth}
+      \centering
+      \begin{tabular}{|l|c|c|c|}
+        \hline
+        & MAE & MAPE & RMSE \\
+        \hline
+        Bramble & 0.65 & 3.44 & 0.89 \\
+        Camber & 0.61 & 5.27 & 0.72 \\
+        Chi & 0.61 & 4.72 & 0.71 \\
+        Soton & 0.45 & 3.55 & 0.54 \\
+        \hline
+      \end{tabular}
+      \caption*{kernel \coloredemph{avec} corrélation inter-station}
+    \end{subtable}
+    \caption{Erreurs de prédiction}
+  \end{table}
+\end{frame}
+
+\begin{frame}{\subsecname}
+  \begin{figure}
+    \centering
+      \subfigure{\includegraphics[scale=0.17]{ukcoast_pred_idsm.pdf}}
+      \subfigure{\includegraphics[scale=0.17]{ukcoast_pred_mosm.pdf}}
+    \caption{Pédictions (rouge) sans (resp avec) corrélation inter-stations à gauche (resp droite)}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{\subsecname}
+  \begin{itemize}
+    \item Kernel appris par chaque modèle:
+    \begin{figure}
+      \centering
+      \subfigure{\includegraphics[scale=1]{ukcoast_crosskernel_idsm.pdf}}%
+      \subfigure{\includegraphics[scale=1]{ukcoast_crosskernel_mosm.pdf}}
+      \caption{Kernel sans (resp avec) corrélation inter-stations à gauche (resp droite)}
+    \end{figure}
+    \pause
+    \item Le modèle corrèle les prédictions de chaque station à court-terme
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{\subsecname}
+  \begin{itemize}
+    \item Prédictions probabilistes: 
+    \pause
+    \item Quelle est la probabilité qu'il fasse entre 13° et 14° à Bramble au 08/06/2020 à minuit ?
+    %
+    \item \toblue{Prédiction} du modèle: $59 \%$
+    \pause
+    \item A l'inverse: à la même date, quel intervalle à 90\% ?
+    %
+    \item \toblue{Prédiction} du modèle: $[14.2; 14.9]$° 
+  \end{itemize}
+\end{frame}
+
+%========== Limites ==================%
+\section{Avantages / Limites des GP naïfs}
+
+\subsection{Avantages}
+\begin{frame}{\subsecname}
+  \begin{itemize}
+    \item \coloredemph{Probabiliste}: génératif, fourni une confiance (aka incertitude)
+    \pause
+    \item \coloredemph{Bayésien}: "contrôle" des hypothèses (a priori)
+    \pause
+    \item \coloredemph{Non-paramétrique}: \toblue{prédiction} = \tored{data} $\times$ \topurple{hypothèse}
+      \begin{enumerate}
+        \item Paramètres du $GP$ (moyenne, covariance) = les/des \tored{données d'entraînement}, de taille infinie (non-bornée)
+        \pause
+        \item $+$ les \topurple{hyperparamètres} (ce qui règle l'hypothèse)
+      \end{enumerate}
+    \pause
+    \item Le modèle prédictif n'est pas "réduit" à un ensemble \coloredemph{fini} de paramètres
+  \end{itemize}
+\end{frame}
+
+\subsection{Inconvénivents}
+\begin{frame}{\subsecname}
+  Scalabilité:
+  \begin{itemize}
+    \item Bottleneck = inverser la matrice de covariance (kernel)
+    \item La distribution prédictive $GP( m_{*}, k_{*, \theta} )$ est lourde à calculer ($n \gg 10^4$)
+      \begin{itemize}
+        \item \tored{Entraînement} (log-likelihood): calcul: $\mathcal{O}(n^3)$/itération. Mémoire: $\mathcal{O}(n^2)$
+        \item \toblue{Prédiction} (inférence): calcul $\mathcal{O}(n^3)$ (une fois), 
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{\subsecname}
+  $GP( m_{*}, k_{*, \theta} )$ est incalculable analytiquement ou trop coûteuse,
+  \begin{itemize}
+    \item Méthodes variationnelles:
+    \item $GP( m_{*}, k_{*, \theta} )$ est \coloredemph{approximée} par une distribution "variationnelle" $q_{\psi}$, proche, plus simple à calculer
+    \pause
+    \item (hyper-) paramètres appris par minimisation d'une "différence"\footnote{Ex: divergence KL.}  entre $q_{\psi}$ et $GP( m_{*}, k_{*, \theta} )$
+    \pause
+    \item Donc l'inférence devient un problème d'\coloredemph{optimisation}: gradient stochastique, differentiation automatique (PyTorch, Tensorflow, JAX), etc.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{\subsecname}
+  Méthodes d'\coloredemph{échantillonnage} (MCMC, importance sampling, MH, etc):
+  \begin{itemize}
+    \item Idée: remplacer $GP( m_{*}, k_{*, \theta} )$ par un échantillonneur peu coutêux
+    \pause
+    \item $m_{*}, k_{*, \theta}$ restent inconnus mais peuvent être estimés en échantillonnant (beaucoup) puis en moyennant (loi forte des grands nombres)
+    \item $GP( m_{*}, k_{*, \theta} ) = p(f_{*, _theta}|\tored{y, x}) = \int p(f_* | f) p(f | y) df$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{\subsecname}
+  GP pour les données non-Gaussiennes ? \\ 
+  \begin{itemize}
+    \item<1-> Monde Gaussien: symmétrique, pas d'outliers, valeurs réelles
+    \only<1-3>{
+      \begin{equation*}
+      \centering
+      \only<2>{
+        \overbrace{p(f_\theta | y, \vectorx{x}, x_0)}^{\toblue{posterior}}
+        =
+        \frac{
+          \overbrace{p(y | \vectorx{x}, f_\theta)}^{\tored{likelihood}}
+          \overbrace{p(f_\theta)}^{\topurple{prior = Gaussien}}
+        }{
+          \underbrace{p(y | \vectorx{x})}_{Gaussien}
+        }
+      }%
+      %
+      \only<3>{
+        \overbrace{p(f_\theta | y, \vectorx{x}, x_0)}^{\toblue{posterior = Gaussien}}
+        =
+        \frac{
+          \overbrace{p(y | \vectorx{x}, f_\theta)}^{\tored{likelihood = Gaussien}}
+          \overbrace{p(f_\theta)}^{\topurple{prior = Gaussien}}
+        }{
+          \underbrace{p(y | \vectorx{x})}_{Gaussien}
+        } 
+        = GP(m_{*}, k_{*, \theta})
+      }%
+      \end{equation*}%
+    }%
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{\subsecname}
+  GP pour les données non-Gaussiennes ? \\ 
+  \begin{itemize}
+    \item<1->  Monde\underline{s} \coloredemph{non-Gaussiens}: 
+    valeurs positives (durées, pluviométrie), comptage (nb d'accidents), valeurs extrèmes (rendements financiers), taux, catégorielles, etc.%
+    %
+    \item<2-> Principe: transformer $\mathbb{E}(y)$ (espace latent) puis faire une hypothèse de GP sur la résultante.
+    Prédiction en opération inverse.
+    \item<3-> Exempe (classification): modéliser $\text{inv-logit} [ p(y=\text{Chat}) ]$ avec un $GP$
+    \item<4-> Conséquence:
+    \only<5>{
+      \begin{equation*}
+        \overbrace{p(f_\theta | y, \vectorx{x}, x_0)}^{\toblue{posterior = non-Gaussien}}
+        =
+        \frac{
+          \overbrace{p(y | \vectorx{x}, f_\theta)}^{\tored{likelihood = non-Gaussien}}
+          \overbrace{p(f_\theta)}^{\topurple{prior = Gaussien}}
+        }{
+          \underbrace{p(y | \vectorx{x})}_{non-Gaussien}
+        } 
+        = \xcancel{GP(m_{*}, k_{*, \theta})}
+      \end{equation*}
+    }%
+  \end{itemize}
+\end{frame}
+
+\subsection{Remèdes}
+
+%
 \end{document}

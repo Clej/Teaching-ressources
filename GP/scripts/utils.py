@@ -11,7 +11,7 @@ def scatter_hist(x, y, margin_hist=True, fig=None):
     if fig is None:
         fig = plt.figure(
             # want a square
-            figsize=(2, 2)
+            figsize=(4, 4)
             # get_figsize(columnwidth, 0.5)
         )
 
