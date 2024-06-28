@@ -25,4 +25,8 @@ Plan:
 
 - Processus Gaussien pour les cas non-Gaussiens
 
-/!\ Citer références classiques: Rassmussen
+TODO:
+- ajouter sigma sur chaque kernel: FAIT
+- en posterior: couleurs sur train (rouge), pred (cyan), hypothèse (violet): FAIT
+- Citer références classiques: Rassmussen, 
+- Bullet sur le Bayésien: réduction de l'incertitude: FAIT
