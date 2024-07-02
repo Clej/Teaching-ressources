@@ -12,11 +12,7 @@
 \usepackage{xcolor}
 
 % biblio management
-\usepackage[
-backend=bibtex,
-style=alphabetic,
-sorting=yntSolin2014
-]{biblatex}
+\usepackage[backend=bibtex,style=authoryear,citestyle=authoryear]{biblatex}
 \addbibresource{refs.bib}
 
 \newcommand{\eg}{\textit{e.g. }}
@@ -1242,7 +1238,6 @@ Thales Services Numériques,
 %======== References frame =========%
 \begin{frame}[allowframebreaks]{Références}
   % \bibliographystyle{plain}
-  % \bibliography{refs}
   \printbibliography
 \end{frame}
 \end{document}
