@@ -1,0 +1,67 @@
+@book{Rasmussen2006,
+   abstract = {During the lifetime of almost every woman sooner or later a treatment will be necessary for a urogynaecological disorder, such as urinary incontinence, urinary tract infection, vulvo-vaginal or bladder irritability, genital itching, dyspareunia, genital prolapse or pelvic floor disorder. The causes for these common disorders are many. A successfull therapy should take the polyaetiology of urogynaecological disorders into consideration and adapt the different therapeutical possibilities to the specific disease to be treated as well as the patient's needs. The possibilities of conservative treatment are drinking and micturition training, physical therapy with the help of vaginal cones, balls and electromyographic biofeedback devices, oestrogens, pessaries, drug therapy of urinary tract infections or urge incontinence. The use of these different possibilities will be discussed thoroughly. In cases where conservative therapy is insufficient the indication for surgery as well as the timing and choice of the surgical procedure will also be considered.},
+   author = {Carl Edward Rasmussen and Christopher K.I Williams},
+   isbn = {026218253X},
+   issn = {10236090},
+   publisher = {MIT Press},
+   title = {Gaussian Processes for Machine Learning},
+   year = {2006},
+}
+
+@inproceedings{Hensman2015,
+   abstract = {Gaussian process classification is a popular method with a number of appealing properties. We show how to scale the model within a variational inducing point framework, out-performing the state of the art on benchmark datasets. Importantly, the variational formulation can be exploited to allow classification in problems with millions of data points, as we demonstrate in experiments.},
+   author = {James Hensman and Alexander G De and G Matthews and Zoubin Ghahramani},
+   journal = {AISTATS},
+   title = {Scalable Variational Gaussian Process Classification},
+   year = {2015},
+}
+
+@inproceedings{Parra2017,
+   abstract = {Early approaches to multiple-output Gaussian processes (MOGPs) relied on linear combinations of independent, latent, single-output Gaussian processes (GPs). This resulted in cross-covariance functions with limited parametric interpretation, thus conflicting with the ability of single-output GPs to understand lengthscales, frequencies and magnitudes to name a few. On the contrary, current approaches to MOGP are able to better interpret the relationship between different channels by directly modelling the cross-covariances as a spectral mixture kernel with a phase shift. We extend this rationale and propose a parametric family of complex-valued cross-spectral densities and then build on Cramér's Theorem (the multivariate version of Bochner's Theorem) to provide a principled approach to design multi-variate covariance functions. The so-constructed kernels are able to model delays among channels in addition to phase differences and are thus more expressive than previous methods, while also providing full parametric interpretation of the relationship across channels. The proposed method is first validated on synthetic data and then compared to existing MOGP methods on two real-world examples.},
+   author = {Gabriel Parra and Felipe Tobar},
+   issn = {10495258},
+   journal = {NIPS},
+   title = {Spectral mixture kernels for multi-output Gaussian processes},
+   year = {2017},
+}
+
+@inproceedings{Wilson2016,
+   abstract = {We introduce scalable deep kernels, which combine the structural properties of deep learning architectures with the non-parametric flexibility of kernel methods. Specifically, we transform the inputs of a spectral mixture base kernel with a deep architecture, using local kernel interpolation, inducing points, and structure exploiting (Kronecker and Toeplitz) algebra for a scalable kernel representation. These closed-form kernels can be used as drop-in replacements for standard kernels, with benefits in expressive power and scalability. We jointly learn the properties of these kernels through the marginal likelihood of a Gaus-sian process. Inference and learning cost O(n) for n training points, and predictions cost O(1) per test point. On a large and diverse collection of applications, including a dataset with 2 million examples, we show improved performance over scalable Gaus-sian processes with flexible kernel learning models, and stand-alone deep architectures.},
+   author = {Andrew Gordon Wilson and Zhiting Hu and Ruslan Salakhutdinov and Eric P Xing},
+   journal = {AISTATS},
+   title = {Deep Kernel Learning},
+   year = {2016},
+}
+
+@inproceedings{Titsias2024,
+   abstract = {In Online Continual Learning (OCL) a learning system receives a stream of data and sequentially performs prediction and training steps. Key challenges in OCL include automatic adaptation to the specific non-stationary structure of the data and maintaining appropriate predictive uncertainty. To address these challenges we introduce a probabilistic Bayesian online learning approach that utilizes a (possibly pretrained) neural representation and a state space model over the linear predictor weights. Non-stationarity in the linear predictor weights is modelled using a "parameter drift" transition density, parametrized by a coefficient that quantifies forgetting. Inference in the model is implemented with efficient Kalman filter recursions which track the posterior distribution over the linear weights, while online SGD updates over the transition dynamics coefficient allow for adaptation to the non-stationarity observed in the data. While the framework is developed assuming a linear Gaussian model, we extend it to deal with classification problems and for fine-tuning the deep learning representation. In a set of experiments in multi-class classification using data sets such as CIFAR-100 and CLOC we demonstrate the model's predictive ability and its flexibility in capturing non-stationarity.},
+   author = {Michalis K Titsias and Alexandre Galashov and Amal Rannen-Triki and Razvan Pascanu and Yee Whye and Jörg Bornschein},
+   journal = {ICLR},
+   title = {Kalman Filter for Online Classification of Non-Stationary Data},
+   year = {2024},
+}
+
+@inproceedings{Solin2014,
+   abstract = {This paper shows how periodic covariance functions in Gaussian process regression can be reformulated as state space models, which can be solved with classical Kalman filtering theory. This reduces the problematic cubic complexity of Gaussian process regression in the number of time steps into linear time complexity. The representation is based on expanding periodic covariance functions into a series of stochastic resonators. The explicit representation of the canonical periodic co-variance function is written out and the expansion is shown to uniformly converge to the exact covariance function with a known convergence rate. The framework is generalized to quasi-periodic covariance functions by introducing damping terms in the system and applied to two sets of real data. The approach could be easily extended to non-stationary and spatio-temporal variants.},
+   author = {Arno Solin and Simo Särkkä},
+   journal = {AISTATS},
+   title = {Explicit Link Between Periodic Covariance Functions and State Space Models},
+   year = {2014},
+}
+
+@inproceedings{Borovitskiy2021,
+   abstract = {Gaussian processes are a versatile framework for learning unknown functions in a manner that permits one to utilize prior information about their properties. Although many different Gaussian process models are readily available when the input space is Euclidean, the choice is much more limited for Gaussian processes whose input space is an undirected graph. In this work, we leverage the stochas-tic partial differential equation characterization of Matérn Gaussian processes-a widely-used model class in the Euclidean setting-to study their analog for undirected graphs. We show that the resulting Gaussian processes inherit various attractive properties of their Euclidean and Riemannian analogs and provide techniques that allow them to be trained using standard methods, such as inducing points. This enables graph Matérn Gaussian processes to be employed in mini-batch and non-conjugate settings, thereby making them more accessible to practitioners and easier to deploy within larger learning frameworks.},
+   author = {Viacheslav Borovitskiy and Peter Mostowsky and Iskander Azangulov and Marc Peter Deisenroth and Alexander Terenin and Nicolas Durrande},
+   journal = {AISTATS},
+   title = {Matérn Gaussian Processes on Graphs},
+   year = {2021},
+}
+
+@inproceedings{Bruinsma2020,
+   abstract = {Multi-output Gaussian processes (MOGPs) leverage the flexibility and interpretability of GPs while capturing structure across outputs, which is desirable, for example, in spatio-temporal modelling. The key problem with MOGPs is their computational scaling O(n 3 p 3), which is cubic in the number of both inputs n (e.g., time points or locations) and outputs p. For this reason, a popular class of MOGPs assumes that the data live around a low-dimensional linear subspace, reducing the complexity to O(n 3 m 3). However, this cost is still cubic in the dimensionality of the subspace m, which is still prohibitively expensive for many applications. We propose the use of a sufficient statistic of the data to accelerate inference and learning in MOGPs with orthogonal bases. The method achieves linear scaling in m in practice, allowing these models to scale to large m without sacrificing significant expres-sivity or requiring approximation. This advance opens up a wide range of real-world tasks and can be combined with existing GP approximations in a plug-and-play way. We demonstrate the efficacy of the method on various synthetic and real-world data sets.},
+   author = {Wessel P Bruinsma and Eric Perim and Will Tebbutt and J Scott Hosking and Arno Solin and Richard E Turner},
+   journal = {ICML},
+   keywords = {ICML,Machine Learning},
+   title = {Scalable Exact Inference in Multi-Output Gaussian Processes},
+   year = {2020},
+}

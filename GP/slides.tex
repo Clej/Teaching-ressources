@@ -10,12 +10,15 @@
 \usepackage{enumerate}
 \usepackage[french]{babel}
 \usepackage{xcolor}
-% \usepackage[citestyle=authoryear,backend=bibtex,citetracker=true]{biblatex}
-% \bibliography{bibfile}
 
-% \usepackage{mathabx}
-% \newcommand{\stup}{{\scriptsize $\blacktriangle$ }}
-% \newcommand{\stdown}{$\blacktriangledown$ }
+% biblio management
+\usepackage[
+backend=bibtex,
+style=alphabetic,
+sorting=yntSolin2014
+]{biblatex}
+\addbibresource{refs.bib}
+
 \newcommand{\eg}{\textit{e.g. }}
 \newcommand{\ie}{\textit{i.e. }}
 \renewcommand{\footnotesize}{\tiny}
@@ -54,7 +57,7 @@
 \setbeamercolor{author in head/foot}{bg=dodgerblue}
 
 \title[Introduction aux Processus Gaussiens]{Introduction aux Processus Gaussiens (1/2)}
-\subtitle{Application aux données spatio-temporelles}
+\subtitle{Application aux données temporelles}
 \institute[]{}
 % \titlegraphic{
 % 	\includegraphics[scale=0.5]{Thales.png}
@@ -66,7 +69,7 @@
 Thales Services Numériques,
 \\ AD/AD3/IA
 }
-\date{\today}
+\date{4 novembre 2024}
 % \date{25 Novembre 2024}
 
 \addtobeamertemplate{navigation symbols}{}{%
@@ -95,9 +98,9 @@ Thales Services Numériques,
   \begin{itemize}
     \item Pédagogique (pas un état de l'art)
     \pause
-    \item Comprendre la philosophie (Bayésienne et non-paramétrique) des processus Gaussien (GP)
+    \item Comprendre la philosophie (Bayésienne et non-paramétrique) des processus Gaussiens ($GP$)
     \pause
-    \item Comprendre l'interêt probabiliste/prédictifs des $GP$
+    \item Comprendre leurs interêts probabilistes/prédictifs
     \pause
     \item Comprendre les limites des $GP$ "naïfs"
   \end{itemize}
@@ -293,11 +296,11 @@ Thales Services Numériques,
   \end{equation*}
   %
   \begin{figure}[ht]
-    \includegraphics[scale=0.3]{gaussian_2d_2outof5.pdf}
+    \includegraphics[scale=0.4]{gaussian_2d_2outof5.pdf}
     $\Longleftrightarrow$
-    \includegraphics[scale=0.3]{gaussian_2d_valuevsindex.pdf}
+    \includegraphics[scale=0.4]{gaussian_2d_valuevsindex.pdf}
     \caption{Dimensions $j=1, 2$. Gauche: \textcolor{violet}{$10^4$} $+8$ échantillons. 
-    Droite: $8$ \coloredemph{mêmes} échantillons.}
+    Droite: Réindéxation des $8$ \coloredemph{mêmes} échantillons.}
   \end{figure}
 \end{frame}
 
@@ -327,10 +330,10 @@ Thales Services Numériques,
     }
   \end{equation*}
   %
-  \begin{figure}[ht]
+  \begin{figure}[h]
     \includegraphics[scale=0.4]{gaussian_5d_valuevsindex.pdf}
-    \caption{$8$ échantillons, dimensions $j=1, \dots, 5$.
-    Chaque courbe est un tirage de $\mathcal{N}(\vectorx{\mu} , \matrixx{\Sigma})$
+    \caption{Réindéxation de $8$ échantillons, dimensions $j=1, \dots, 5$.
+    Chaque "courbe" est un tirage de $\mathcal{N}(\vectorx{\mu} , \matrixx{\Sigma})$
     }
   \end{figure}
 \end{frame}
@@ -365,8 +368,7 @@ Thales Services Numériques,
   \end{equation*}%
   \begin{figure}[h]
     \includegraphics[scale=0.4]{gaussian_50d_valuevsindex.pdf}%
-    \caption{$8$ échantillons, dimensions $j=1, \dots, 50$.
-    Chaque courbe est un tirage de $\mathcal{N}(\vectorx{\mu} , \matrixx{\Sigma})$}
+    \caption{Réindéxation de $8$ échantillons, dimensions $j=1, \dots, 50$}
   \end{figure}
 \end{frame}
 %
@@ -383,36 +385,52 @@ Thales Services Numériques,
   % 
   \pause
   % 
-  \begin{block}{Processus Gaussien $y(\vectorx{x}) \sim GP(m, k)$}
+  \begin{block}{Processus Gaussien $y(\vectorx{x}) \sim GP(m, k)$ \cite{Rasmussen2006}}
     Un processus Gaussien (GP) est une distribution de probabilités sur un espace de \coloredemph{fonctions},
     $y(\vectorx{x}): \mathcal{X} \to \mathcal{Y}$, telle que toute collection finie
     $[ y(x_i), \dots, y(x_j), \dots y(x_k) ], \forall i,j,k$ forme un vecteur Gaussien. 
     % Les deux fonctions $m$ et $k$ définissent les paramètres du $GP$.
   \end{block}
-  \pause
-  Exemple, $y(t): \mathbb{R} \to \mathbb{R}$ (série temporelle), \coloredemph{n'importe qu'elle discrétisation} de $y$ doit
-   former un vecteur Gaussien, en prenant par ex $2$ entrées de $y$:
-  \begin{equation*}
-    y(\vectorx{x}) \sim GP(m, k) \implies
-    y([t_i, t_j]) \sim \mathcal{N} (
-      % mu
-      \begin{pmatrix}
-        \mu_i \\
-        \mu_j 
-      \end{pmatrix},
-      % sigma
-      \begin{pmatrix}
-        \Sigma_{i}^2 & \Sigma_{ij} \\
-        \Sigma_{ij} & \Sigma_{j}^2
-      \end{pmatrix}
-      )
-  \end{equation*}
-  %
+\end{frame}
+
+\begin{frame}{\subsecname}
+  \begin{itemize}
+    \item $GP$ peut être vu comme une réindéxation d'un vecteur "infini"
+    \pause
+    \item Cas temporal: $y(t): \mathbb{R}^{+} \to \mathbb{R}$, \coloredemph{n'importe qu'elle discrétisation} de $y$ doit
+    former un vecteur Gaussien, en prenant par ex $2$ entrées de $y$:
+    \begin{equation*}
+      y(\vectorx{x}) \sim GP(m, k) \implies
+      y([t_i, t_j]) \sim \mathcal{N} (
+        % mu
+        \begin{pmatrix}
+          \mu_i \\
+          \mu_j 
+        \end{pmatrix},
+        % sigma
+        \begin{pmatrix}
+          \Sigma_{i}^2 & \Sigma_{ij} \\
+          \Sigma_{ij} & \Sigma_{j}^2
+        \end{pmatrix}
+        )
+    \end{equation*}
+    \item Exemple visu: cf. exemples introductifs
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{\subsecname}
+  \begin{itemize}
+    \item Cas spatial: $y(\vectorx{x}): \mathbb{R}^2 \to \mathcal{Y} = \mathbb{R}$ (ex: température en 2D)
+    \item Visu d'un échantillon:%
+  \end{itemize}%
+  \begin{figure}
+    \centering
+    \includegraphics[scale=1]{1_gp_space_SquaredExponentialKernel.pdf}
+  \end{figure}
 \end{frame}
 
 % informal details
 \begin{frame}{\subsecname}
-  
   \begin{itemize}
     \item On impose souvent une forme simple sur $\mathbb{E}(y(x)) = m(x)$ 
     comme: $\vectorx{\beta}^\top \vectorx{x}$, $\vectorx{0}$
@@ -420,17 +438,17 @@ Thales Services Numériques,
     \item $y: \mathcal{X} \to \mathcal{Y}$ est une \coloredemph{fonction}: il suffit de bien choisir $\mathcal{X}$ et $\mathcal{Y}$
     \begin{itemize}
       \item $\mathcal{X} = \mathbb{R}^{+}$ et $\mathcal{Y} = \mathbb{R}$ $\implies$
-      $y$ = \coloredemph{série temporelle}
+      $y$ = \coloredemph{série temporelle} \cite{Rasmussen2006}
       \pause
-      \item $\mathcal{X} = [a, b] \times [c, d]$ et  $\mathcal{Y} = \mathbb{R}$ $\implies$
+      \item $\mathcal{X} = [a, b] \times [c, d]$ (ou $\mathbb{R}^2$) et  $\mathcal{Y} = \mathbb{R}$ $\implies$
       $y$ = \coloredemph{champ spatial} (météo, hydro, etc)
       \pause
       \item $\mathcal{X} = [a, b] \times [c, d] \times \mathbb{R}^{+}$ et $\mathcal{Y} = \mathbb{R}$ $\implies$
       $y$ = \coloredemph{série temporelle d'images}
       \pause
       \item $\mathcal{X} = \mathbb{R}^{d}$ et $\mathcal{Y} = \{1 \dots K \}$ $\implies$
-      $y$ = \coloredemph{classificateur} d'images/pixels (ex: segmentation, catégorisation)
-      \item $\mathcal{X}$ et $\mathcal{Y}$ peuvent être des espaces de graphes
+      $y$ = \coloredemph{classificateur} d'images/pixels (ex: segmentation) \cite{Hensman2015}
+      \item $\mathcal{X}$ et $\mathcal{Y}$ peuvent être des espaces de graphes \cite{Borovitskiy2021}
       \item \dots etc, etc, etc.
     \end{itemize}
   \end{itemize}
@@ -443,18 +461,18 @@ Thales Services Numériques,
   \begin{itemize}
     \item $k(\vectorx{x}, \vectorx{x^{\prime}}) = \mathbb{C}( y(\vectorx{x}), y(\vectorx{x^\prime}) )$
      représente la \coloredemph{similarité de $y$} entre deux entrées $\vectorx{x}$ et $\vectorx{x}^\prime$,
-     donc doit générer une matrice de covariance valide
+     donc doit générer une matrice de covariance valide%
      \footnote{
       $\sum_{i,j}^{n} a_i a_j k(\vectorx{x}_i, \vectorx{x}_j) \geq 0, \forall \vectorx{a} = [a_1, \dots, a_n]$
     }
     \pause
-    \item $k$ défini \coloredemph{implicitement} les propriétés fonctionnelles de $y$
+    \item $k$ défini \coloredemph{implicitement} les propriétés fonctionnelles de $y$%
     \footnote{
       C-à-d être un noyau reproduisant d'un espace de Hilbert:
       $y(x_0) = \sum_{i=1}^{\infty} y(x_i) k(x_i, x_0)$ 
     }
     \pause
-    \item Un kernel dépend d'un vecteur \coloredemph{d'hyperparamètres} $\vectorx{\theta}$
+    \item Kernel: fonction qui dépend aussi \coloredemph{d'hyperparamètres} $\vectorx{\theta}$
     \pause
     \item Et donc le nerf d'un $GP$ est essentiellement dans son kernel (noyau)
   \end{itemize}
@@ -466,9 +484,9 @@ Thales Services Numériques,
     \item Quelques exemples de $GP(0, k)$ défini sur $\mathcal{X} = \mathbb{R}^+$ et $\mathcal{Y} = \mathbb{R}$
     (série temporelle)
     %
-    \item kernel de série temporelle $\leftrightarrow$ fonction d'autocovariance
+    \item kernel de série temporelle $\leftrightarrow$ fonction d'\coloredemph{autocovariance}
     %
-    \item Visualiser: bonne manière de comprendre un kernel (au delà des considérations théoriques...)
+    \item Visualiser: bonne manière de comprendre un kernel
   \end{itemize}  
 \end{frame}
 
@@ -544,12 +562,12 @@ Thales Services Numériques,
 
 \begin{frame}{\subsecname}
   \begin{itemize}
-    \item Aussi, des kernels dans le domaine fréquentiel (Fourier)
+    \item Aussi, des kernels dans le domaine fréquentiel (Fourier)\cite{Parra2017}%
     \footnote{ex: $\sum_{q=0}^Q \sigma_q^2 e^{-2 \pi^2 \Sigma_q (t-t^\prime)^2} \cos(2\pi \mu_q (t-t^\prime))$}
   %  
   \pause
     \item Famille des \coloredemph{kernels stationnaires}, 
-    $k(t, t^\prime)$ ne dépend que de $t - t^\prime \leftrightarrow $ "plus les inputs sont éloignées, moins les sorties associées sont corrélées"
+    $k(t, t^\prime)$ ne dépend que de $t - t^\prime \leftrightarrow$ "plus les inputs sont éloignées, moins les sorties associées sont corrélées"
   \end{itemize}
   %
   \begin{figure}
@@ -566,8 +584,7 @@ Thales Services Numériques,
       \item $k_1 \times k_2$: "Et" logique
     \end{itemize}
     %
-    \item Depuis quelques années: construction de kernels par des deep-nets (deep-kernel), pratique mais pas interprétable
-  % 
+    \item Depuis quelques années: construction de kernels par des deep-nets \cite{Wilson2016}, pratique mais peu interprétable% 
   \pause
     \item Plus récemment: construction de kernel à  partir d'équations différentielles
   \end{itemize}
@@ -579,7 +596,7 @@ Thales Services Numériques,
 \subsection{Règle de Bayes}
 \begin{frame}{\subsecname}  
   \begin{itemize}
-    \item<1-> Règle de Bayes: 
+    \item<1-> Règle de Bayes: %
     $p(y_2| y_1)
     = \frac{p(y_1, y_2)}{p(y_1)}
     = \frac{p(y_1 | y_2) p(y_2)}{p(y_1)}
@@ -597,7 +614,7 @@ Thales Services Numériques,
     \item<3-6> $
     p(y_2 | y_1 = u) = \mathcal{N} (
       \mu_2 \tored{+ \rho \Sigma_1^{-1} (u - \mu_1)},
-      \Sigma_2 \tored{- \rho^2 \Sigma_1^{-1}}
+      \Sigma_2 \tored{- \rho^2 \Sigma_1^{-1}}%
     )$%
   \end{itemize}%
   \begin{figure}
@@ -611,9 +628,13 @@ Thales Services Numériques,
     p(y_2 | y_1 = u) = \mathcal{N} (
       \mu_2 \tored{+ \rho \Sigma_1^{-1} (u - \mu_1)},
       \underbrace{\Sigma_2 \tored{- \rho^2 \Sigma_1^{-1}}}_{\geq 0}%
-    )$\\
+    )$%
+    \\
     Conditionner $y_2 | y_1$ $\leftrightarrow$ réduire l'incertitude (variance) de $y_2$
-  }%
+    \\
+    \pause
+    Conditionnement entre variables Gaussiennes: reste Gaussien (conjugué)
+    }%
 \end{frame}
 
 % Posterior of a GP
@@ -621,85 +642,82 @@ Thales Services Numériques,
 \begin{frame}{\subsecname}
   
   \begin{itemize}
-    \item<1-> Data \tored{entraînement}: $\{y_i, x_i\}_{1 \leq i \leq n} = [\tored{y}, \tored{\vectorx{x}}]$, test: $y_0, \toblue{x_0}$
-    %
-    \item<2-> Modèle de prédiction (régression): $y_0 = f(x_0)$ (pour le moment sans bruit)
-    %
-    \item<3-> \topurple{Hypothèses}: $\topurple{f_\theta} \sim GP(0, k_\theta)$ et $y_i = f_\theta (x_i)$:
+  \item<1-> Data \tored{entraînement}: $\{y_i, x_i\}_{1 \leq i \leq n} = [\tored{y}, \tored{\vectorx{x}}]$, test: $y_0, \toblue{x_0}$%
+  \item<2-> Modèle de \toblue{prédiction} (régression): $y_0 = f_{\theta}(x_0)$ %(pour le moment sans bruit)%
+  \item<3-> \topurple{Hypothèses}: $\topurple{f_\theta} \sim GP(0, k_\theta)$ et $y_i = f_\theta (x_i)$:%
+  \begin{equation*}
+    \underbrace{[\tored{y}, f_\theta( \toblue{x_0} )]^\top}_{(n + 1) \times 1} \sim \mathcal{N}(
+      % mean
+      \vectorx{0},
+      % kernel
+      % k_\theta(\tored{\vectorx{x}}, \tored{\vectorx{x}})
+    \begin{pmatrix}
+      \matrixx{K}_{\tored{y}}   & \vectorx{k}_{\toblue{0}} \\
+      \vectorx{k}_{\toblue{0}}^\top      & k_\theta( \toblue{x_0} , \toblue{x_0} )
+    \end{pmatrix}
+    )
+  \end{equation*}
+  %
+  \only<4>{
+    \matrixx{K}_{\tored{y}} =
+    \scalemath{0.80}{
+    \begin{pmatrix}
+      k_\theta(\tored{x_1}, \tored{x_1}) & \dots & k_\theta(\tored{x_1}, \tored{x_n}) \\
+      \vdots             & \ddots& \vdots          \\
+      k_\theta(\tored{x_n}, \tored{x_1}) & \dots & k_\theta(\tored{x_n},\tored{x_n})
+    \end{pmatrix}}
+  }
+  \only<5>{
+    $\vectorx{k}_{\toblue{0}} = [k_\theta(\toblue{x_0}, \tored{x_1}), \dots, k_\theta(\toblue{x_0}, \tored{x_n})]^\top$
+  }
+  %
+  \item<6-> But: aprendre $f_\theta$ $\rightarrow$ prédire $f_\theta (x_0) = y_0$
+  %
+  \item<6-> Intuitivement: générer des \coloredemph{prédictions} avec $f_\theta \sim GP (0, k_\theta)$
+  ET garder ce qui fit à $[\tored{y}, \tored{\vectorx{x}}]$ et à \coloredemph{$x_0$}:
+  %
+  \only<7>{
+    $\underbrace{p(hypothèse | data)}_{\toblue{posterior}}
+    & = 
+    \frac{
+      \overbrace{p(data | hypothèse)}^{\tored{likelihood}}
+      \overbrace{p(hypothèse)}^{\topurple{prior}}
+    }{
+      \underbrace{p(data)}_{evidence}
+    }$}
+  %
+  \item <8-> Revient à générer selon:%
     \begin{equation*}
-      \underbrace{[\tored{y}, f_\theta( \toblue{x_0} )]^\top}_{(n + 1) \times 1} \sim \mathcal{N}(
-        % mean
-        \vectorx{0},
-        % kernel
-        % k_\theta(\tored{\vectorx{x}}, \tored{\vectorx{x}})
-        \begin{pmatrix}
-          \matrixx{K}_{\tored{y}}   & \vectorx{k}_{\toblue{0}} \\
-          \vectorx{k}_{\toblue{0}}^\top      & k_\theta( \toblue{x_0} , \toblue{x_0} )
-        \end{pmatrix}
+      \only<8->{
+        \overbrace{p( f_{\theta}( \tored{\vectorx{x}} ), f_{\theta}( \toblue{x_0} ) | \tored{y}, \tored{\vectorx{x}}, x_0)}^{\toblue{posterior}}
+      }
+      \only<9->{
+        =
+        \frac{
+          \overbrace{p(\tored{y} | f_{\theta} (\tored{\vectorx{x}}) )}^{\tored{likelihood}}
+          \overbrace{p( f_{\theta}( \tored{\vectorx{x}} ), f_{\theta}( \toblue{x_0} ) )}^{\topurple{prior}}
+        }{
+          p(\tored{y} | \tored{\vectorx{x}})
+        } 
+        = GP(
+          m_{*},
+          k_{*, \theta}
         )
+      }
     \end{equation*}
-    %
-    \only<4>{
-      \matrixx{K}_{\tored{y}} =
-      \scalemath{0.80}{
-      \begin{pmatrix}
-        k_\theta(\tored{x_1}, \tored{x_1}) & \dots & k_\theta(\tored{x_1}, \tored{x_n}) \\
-        \vdots             & \ddots& \vdots          \\
-        k_\theta(\tored{x_n}, \tored{x_1}) & \dots & k_\theta(\tored{x_n},\tored{x_n})
-      \end{pmatrix}}
-    }
-    \only<5>{
-      $\vectorx{k}_{\toblue{0}} = [k_\theta(\toblue{x_0}, \tored{x_1}), \dots, k_\theta(\toblue{x_0}, \tored{x_n})]^\top$
-    }
-    %
-    % \item<4-> $prédiction = hypothèse + data + bruit$
-    \item<6-> But: aprendre $f_\theta$ $\rightarrow$ prédire $f_\theta (x_0) = y_0$
-    %
-    \item<6-> Intuitivement: générer des \coloredemph{prédictions} avec $f_\theta(x_0) \sim GP (0, k_\theta)$
-    ET garder ce qui fit aux data d'entraînement $[\tored{y}, \tored{\vectorx{x}}]$ et à \coloredemph{$x_0$}:
-    %
-    \only<7>{
-      $\underbrace{p(hypothèse | data)}_{\toblue{posterior}}
-      & = 
-      \frac{
-        \overbrace{p(data | hypothèse)}^{\tored{likelihood}}
-        \overbrace{p(hypothèse)}^{\topurple{prior}}
-      }{
-        \underbrace{p(data)}_{evidence}
-      }$}
-    %
-    \item <8-> Revient à générer selon:
-      \begin{equation*}
-        \only<8->{
-          \overbrace{p(f_\theta | y, \vectorx{x}, x_0)}^{\toblue{posterior}}
-        }
-        \only<9->{
-          =
-          \frac{
-            \overbrace{p(y | \vectorx{x}, f_\theta)}^{\tored{likelihood}}
-            \overbrace{p(f_\theta)}^{\topurple{prior}}
-          }{
-            p(y | \vectorx{x})
-          } 
-          = GP(
-            m_{*},
-            k_{*, \theta}
-          )
-        }
-      \end{equation*}
-  \end{itemize}
+\end{itemize}
 \end{frame}
 
 \begin{frame}{\subsecname}
-  Inférence:
+  \toblue{Prédiction} (aka inférence):
   \begin{itemize}
-    \item <1-> $m_{*}, k_{*, \theta}$ ?
-    \item \only<1->{$p(f_\theta | y, \vectorx{x}) = GP(m_{*}, k_{*, \theta})$}
+    \item<1-> $m_{*}, k_{*, \theta}$ ?
+    \item<1-> $p(f_\theta | y, \vectorx{x}) = GP(m_{*}, k_{*, \theta})$
      % posterior mean
-    \item \only<2->{$m_*(\toblue{x_0}) = 0 +$}
-    \only<3->{$\vectorx{k}_{\toblue{0}}^\top \tored{\matrixx{K}_{y}}^{-1} \tored{y}$}
+    \item<2-> $m_*(\toblue{x_0}) = 0 +$
+    \only<3-> $\vectorx{k}_{\toblue{0}}^\top \tored{\matrixx{K}_{y}}^{-1} \tored{y}$
      % posterior covariance
-    \item \only<4->{$k_{*, \topurple{\theta}} (\toblue{x_0}, x_0^\prime) = k_\topurple{\theta} (\toblue{x_0}, \toblue{x_0}) -$}
+    \item<4-> $k_{*, \topurple{\theta}} (\toblue{x_0}, x_0^\prime) = k_\topurple{\theta} (\toblue{x_0}, x_0^\prime) -$
     \only<5->{$\vectorx{k}_{\toblue{0}}^\top \tored{\matrixx{K}_{y}}^{-1} \vectorx{k}_{\toblue{0}}$}
     %
     \item<6-> La distribution de probabilités de la prédiction $y_0$ (connaissant les data d'entraînement) est caractérisée !
@@ -713,22 +731,42 @@ Thales Services Numériques,
 \end{frame}
 
 \begin{frame}{\subsecname}
-  Entraînement:
+  \tored{Entraînement}:
   \begin{itemize}
-    \item<1-> Meilleur $\theta$ ?
-    %
-    \item<2-> Maximum de: $\tored{likelihood}(\theta) = p(y | \vectorx{x}, f_\theta)$ $\leftrightarrow$ $\theta$ telle que les données d'entraînement $\tored{y}$
-     soient le plus probables au regard de l'\topurple{hypothèse} $f_\theta$ et des inputs $\tored{\vectorx{x}}$
-    % \item<3-> 
-      \begin{equation*}
-        \log p(y | \vectorx{x}, f_\theta) =
-        \log \tored{likelihood}(\theta) =
-        - \underbrace{ \tored{y}^\top \tored{\matrixx{K}_{y}}^{-1} \tored{y} }_{fidélité}
-        - \underbrace{ \frac{1}{2} \log | \tored{\matrixx{K}_{y}} |}_{pénalité}
-        - \frac{n}{2} \log 2 \pi
-      \end{equation*}    
-    \item<3-> Rappel: $\tored{\matrixx{K}_{y}}$ matrice $n \times n$ des $k_\theta(x_i, x_j) = \mathbb{C}(f_\theta(x_i), f_\theta(x_j))$
-    \item<4-> Apprentissage de $\theta$ par descente de gradient de $- \log \tored{likelihood}$ (large sous-domaine de la communauté GP)
+    \item<1-> Meilleur $\theta$ ?%
+    \item<2-> Maximum de $\tored{likelihood}(\theta) := p(y | f_{\theta}(\vectorx{x}))$ ?
+    \item<3-> NON !! Restreint l'\topurple{hypothèse} uniquement à $[\tored{y}, \tored{\vectorx{x}}]$ (overfitting)
+    \item<4-> Mieux: \topurple{hypothèse} sur les data + voisinage
+    \item<4-> Maximum de $\tored{likelihood} \tored{marginale}$: %
+    \begin{align*}
+      \only<6->{p( \tored{y} | \tored{\vectorx{x}}, \theta)}%
+      \only<5>{
+      &= p(\tored{y} | \topurple{f_{\theta}} ( \tored{\vectorx{x}} ) ) p( \topurple{f_{\theta}} ( \tored{\vectorx{x}} ) ) \\ }
+      \only<6->{
+        &=  \int_{\mathbb{R}^n} p(\tored{y} | \tored{\vectorx{x}}, \topurple{f_{\theta}} ( \tored{\vectorx{x}} ) ) p( \topurple{f_{\theta}} ( \tored{\vectorx{x}} ) ) \mathrm{d} \topurple{f_{\theta}}  \\ }
+      \only<7->{
+      &= \int \mathcal{N} ( \topurple{f_{\theta}} ( \tored{\vectorx{x}} ),  I_d ) \mathcal{N} (\vectorx{0}, \tored{\matrixx{k}_{y}} )\mathrm{d}f_{\theta}}
+    \end{align*}
+    % $ = \prod_{i} p( y_i | \vectorx{x}_i, f_\theta(\vectorx{x}_i) )$
+    \item<5-> $\leftrightarrow$ $\theta$ telle que les données d'entraînement $\tored{y}$
+    soient le plus probables au regard de toutes les des \topurple{hypothèses} possibles et des inputs $\tored{\vectorx{x}}$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{\subsecname}
+  \begin{itemize}
+    \item<1->
+     \begin{align*}
+      \log \tored{likelihood marg}(\theta)
+       &= \log p( \tored{y} | \tored{\vectorx{x}}, \theta) ( = \log \prod_{i} p( \tored{y_i} | \tored{x_i}, \theta) ) \\
+       &= \log \mathcal{N} (\vectorx{0}, \tored{\matrixx{K}_y} + I_d) \\
+       &= - \underbrace{ \tored{y}^\top \tored{\matrixx{K}_{y}}^{-1} \tored{y} }_{fidélité}
+       - \underbrace{ \frac{1}{2} \log | \tored{\matrixx{K}_{y}} |}_{pénalité}
+       - \frac{n}{2} \log 2 \pi
+     \end{align*}    
+   \item<2-> Rappel: %
+   $\tored{\matrixx{K}_{y}}$ matrice $n \times n$ des $k_\theta(x_i, x_j) = \mathbb{C}(f_\theta(x_i), f_\theta(x_j)) \overset{ex}{=} e^{- \frac{(x_i - x_j)^2}{2 \ell^2} }$
+   \item<3-> Apprentissage de $\theta$ par descente de gradient de $- \log \tored{likelihood marg}$ (large sous-domaine de la communauté GP)
   \end{itemize}
 \end{frame}
 
@@ -739,11 +777,11 @@ Thales Services Numériques,
     \pause
     \item Formuler des \topurple{hypothèses}: choisir/combiner un/des kernels $\topurple{k}_{\theta}$
     \pause
-    \item \tored{Entraîner} le modèle: estimer les hyperparamètres $\tored{\theta}$
+    \item \tored{Entraîner} le modèle: estimer les hyperparamètres $\theta$
     \pause
     \item \toblue{Prédire} ("\emph{inférence}"): évaluer $m_*$ et $k_{*, \theta}$, générer des données, etc.
     \pause
-    \item Critique / évaluation du modèle
+    \item Critique/évaluation du modèle
   \end{enumerate}
 \end{frame}
 
@@ -778,7 +816,7 @@ Thales Services Numériques,
 \begin{frame}{\subsecname}
   \tored{Entraînement}
   \begin{itemize}
-    \item<1-> $\theta$ ? minimisation de $-\log$ likelihood: $\sigma_k \approx 0.92, \ell \approx 0.11$
+    \item<1-> $\theta$ ? minimisation de $-\log$ likelihood marginale: $\sigma_k \approx 0.92, \ell \approx 0.11$
     %
     \item<2-> $m_{*}, k_{*, \theta}$ et $\theta$ appris
     % 
@@ -790,7 +828,7 @@ Thales Services Numériques,
 \end{frame}
 
 \begin{frame}{\subsecname}
-  \toblue{}{Inférence}
+  \toblue{{Inférence}}
   \begin{itemize}
     \item $\tilde{y}_0$: moyenne de $p(f_\theta | y, \vectorx{x}, x_0) = GP(m_{*}, k_{*, \theta})$ en $x_0 =0.8$
     %
@@ -944,7 +982,7 @@ Thales Services Numériques,
 
 \begin{frame}{\subsecname}
   \begin{itemize}
-    \item Série temporelle multivariéé, $GP$ défini de $\mathcal{X} = \mathbb{R}^{+}$ (temps) vers $\mathcal{Y} = \mathbb{R}^{4}$ (stations)
+    \item Série temporelle multivariée, $GP$ défini de $\mathcal{X} = \mathbb{R}^{+}$ (temps) vers $\mathcal{Y} = \mathbb{R}^{4}$ (stations)
     \pause
     \item Hypothèses: les stations sont corrélées, bruitées et périodiques
     %
@@ -968,7 +1006,7 @@ Thales Services Numériques,
   \begin{itemize}
     \item Kernels "spectraux"\footnote{de la forme $k_{ij}(t, t^{\prime}) = 
     \alpha_{ij} e^{- \frac{(|t - t^{\prime}| + \theta_{ij})^2}{2 \Sigma_{ij}}}
-    \cos((|t - t^{\prime}| + \theta_{ij})\mu_{ij} + \phi_{ij})$}: 
+    \cos((|t - t^{\prime}| + \theta_{ij})\mu_{ij} + \phi_{ij})$}\cite{Parra2017}: 
     fit les puissances spectrales pour estimer les périodicités intra/inter et filtrer le bruit (hautes fréquences)
     %
     \item Entraînement: $n=644$, test: $n=6845$, $84$ hyperparamètres (notebook dispo: détails optim etc.)
@@ -1054,8 +1092,8 @@ Thales Services Numériques,
   \end{itemize}
 \end{frame}
 
-%========== Limites ==================%
-\section{Avantages / Limites des GP naïfs}
+%========== Conclusion/opening ==================%
+\section{Avantages / Limites des $GP$ naïfs}
 
 \subsection{Avantages}
 \begin{frame}{\subsecname}
@@ -1072,10 +1110,14 @@ Thales Services Numériques,
       \end{enumerate}
     \pause
     \item Le modèle prédictif n'est pas "réduit" à un ensemble \coloredemph{fini} de paramètres
+    \pause
+    \item Cadre naturel des données spatio/temporelles: échantillonnage irrégulier en temps ($\neq$ SARIMA) et espace, décomposition de la variabilité
+    \pause
+    \item Extensible à plus de dimensions d'entrée que le temps
   \end{itemize}
 \end{frame}
 
-\subsection{Inconvénivents}
+\subsection{Limites}
 \begin{frame}{\subsecname}
   Scalabilité:
   \begin{itemize}
@@ -1085,28 +1127,6 @@ Thales Services Numériques,
         \item \tored{Entraînement} (log-likelihood): calcul: $\mathcal{O}(n^3)$/itération. Mémoire: $\mathcal{O}(n^2)$
         \item \toblue{Prédiction} (inférence): calcul $\mathcal{O}(n^3)$ (une fois), 
       \end{itemize}
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{\subsecname}
-  $GP( m_{*}, k_{*, \theta} )$ est incalculable analytiquement ou trop coûteuse,
-  \begin{itemize}
-    \item Méthodes variationnelles:
-    \item $GP( m_{*}, k_{*, \theta} )$ est \coloredemph{approximée} par une distribution "variationnelle" $q_{\psi}$, proche, plus simple à calculer
-    \pause
-    \item (hyper-) paramètres appris par minimisation d'une "différence"\footnote{Ex: divergence KL.}  entre $q_{\psi}$ et $GP( m_{*}, k_{*, \theta} )$
-    \pause
-    \item Donc l'inférence devient un problème d'\coloredemph{optimisation}: gradient stochastique, differentiation automatique (PyTorch, Tensorflow, JAX), etc.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{\subsecname}
-  Méthodes d'\coloredemph{échantillonnage} (MCMC, importance sampling, MH, etc):
-  \begin{itemize}
-    \item Idée: remplacer $GP( m_{*}, k_{*, \theta} )$ par un échantillonneur peu coutêux
-    \pause
-    \item $m_{*}, k_{*, \theta}$ restent inconnus mais peuvent être estimés en échantillonnant (beaucoup) puis en moyennant (loi forte des grands nombres)
-    \item $GP( m_{*}, k_{*, \theta} ) = p(f_{*, _theta}|\tored{y, x}) = \int p(f_* | f) p(f | y) df$
   \end{itemize}
 \end{frame}
 
@@ -1150,11 +1170,19 @@ Thales Services Numériques,
     \item<1->  Monde\underline{s} \coloredemph{non-Gaussiens}: 
     valeurs positives (durées, pluviométrie), comptage (nb d'accidents), valeurs extrèmes (rendements financiers), taux, catégorielles, etc.%
     %
+    \\
+    \only<1>{
+      \begin{figure}
+        \centering
+        \includegraphics[scale=0.3]{non-guassian_ll.PNG}
+        \caption*{Source: \href{https://gpss.cc/gpss22/slides/STJohn.pdf}{Gaussian Process Summer School 22'}}
+      \end{figure}
+    }
     \item<2-> Principe: transformer $\mathbb{E}(y)$ (espace latent) puis faire une hypothèse de GP sur la résultante.
     Prédiction en opération inverse.
-    \item<3-> Exempe (classification): modéliser $\text{inv-logit} [ p(y=\text{Chat}) ]$ avec un $GP$
-    \item<4-> Conséquence:
-    \only<5>{
+    \item<3-> Exempe (classification): modéliser $\text{inv-logit} [ p(y=\text{Awake}) ]$ avec un $GP$
+    \item<4-> Conséquence:%
+    \only<5>{%
       \begin{equation*}
         \overbrace{p(f_\theta | y, \vectorx{x}, x_0)}^{\toblue{posterior = non-Gaussien}}
         =
@@ -1171,6 +1199,50 @@ Thales Services Numériques,
 \end{frame}
 
 \subsection{Remèdes}
+\begin{frame}{\subsecname}
+  $GP( m_{*}, k_{*, \theta} )$ est incalculable analytiquement ou trop coûteuse,
+  \begin{itemize}
+    \item Méthodes variationnelles: \cite{Bruinsma2020,Hensman2015}
+    \item $GP( m_{*}, k_{*, \theta} )$ est \coloredemph{approximée} par une distribution "variationnelle" $q_{\psi}$, plus simple à apprendre
+    \pause
+    \item (hyper-) paramètres appris par minimisation d'une "différence"\footnote{Ex: divergence KL.}  entre $q_{\psi}$ et $GP( m_{*}, k_{*, \theta} )$
+    \pause
+    \item Le modèle d'inférence est donc appris en résolvant un problème d'\coloredemph{optimisation}: gradient stochastique, differentiation automatique (PyTorch, Tensorflow, JAX), etc.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{\subsecname}
+  Méthodes d'\coloredemph{échantillonnage} (MCMC, importance sampling, MH, etc): \cite{Rasmussen2006}
+  \begin{itemize}
+    \item Principe: remplacer $GP( m_{*}, k_{*, \theta} )$ par un échantillonneur peu coutêux
+    \pause
+    \item $m_{*}, k_{*, \theta}$ restent inconnus et sont estimés en échantillonnant (beaucoup) puis en moyennant (loi forte des grands nombres)
+    % \item $GP( m_{*}, k_{*, \theta} ) = p(f_{*, \theta}|\tored{y, x}) = \int p(f_{*, \theta} | f_{\theta}) p(f_{\theta} | y) df$
+  \end{itemize}
+  \pause
+  Méthode de \coloredemph{Kalman} ("State-space" model): \cite{Solin2014,Titsias2024}
+  \begin{itemize}
+    \item (uniquement pour les données temporelles)
+    \pause
+    \item Réécriture du $GP$ en équation différentielle stochastique
+    \pause
+    \item Apprentissage par l'algorithme de Kalman: $\xcancel{\mathcal{O}(n^3)}$, calcul $\mathcal{O}(n)$
+    \pause
+    \item La réecriture dépend du kernel: nécessite un kernel "pas trop compliqué" (état de recherche)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  Merci pour votre attention.
+  \\
+  Questions ?
+\end{frame}
 
 %
+%======== References frame =========%
+\begin{frame}[allowframebreaks]{Références}
+  % \bibliographystyle{plain}
+  % \bibliography{refs}
+  \printbibliography
+\end{frame}
 \end{document}

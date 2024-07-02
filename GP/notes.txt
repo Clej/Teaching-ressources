@@ -30,3 +30,4 @@ TODO:
 - en posterior: couleurs sur train (rouge), pred (cyan), hypothèse (violet): FAIT
 - Citer références classiques: Rassmussen, 
 - Bullet sur le Bayésien: réduction de l'incertitude: FAIT
+- Ajouter ouverture prochain épisode
