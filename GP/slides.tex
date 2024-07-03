@@ -62,7 +62,7 @@
 company,
 \\ dept
 }
-\date{4 novembre 2024}
+\date{4 Juillet 2024}
 % \date{25 Novembre 2024}
 
 \addtobeamertemplate{navigation symbols}{}{%
@@ -1102,9 +1102,9 @@ company,
         \item $+$ les \topurple{hyperparamètres} (ce qui règle l'hypothèse)
       \end{enumerate}
     \pause
-    \item Le modèle prédictif n'est pas "réduit" à un ensemble \coloredemph{fini} de paramètres
+    \item Le modèle ne se "réduit" pas à un ensemble \coloredemph{fini} de paramètres
     \pause
-    \item Cadre naturel des données spatio/temporelles: échantillonnage irrégulier en temps ($\neq$ SARIMA) et espace, décomposition de la variabilité
+    \item Cadre naturel des données spatio/temporelles: échantillonnage irrégulier ($\neq$ SARIMA), décomposition de la variabilité
     \pause
     \item Extensible à plus de dimensions d'entrée que le temps
   \end{itemize}
@@ -1177,7 +1177,7 @@ company,
     \item<4-> Conséquence:%
     \only<5>{%
       \begin{equation*}
-        \overbrace{p(f_\theta | y, \vectorx{x}, x_0)}^{\toblue{posterior = non-Gaussien}}
+        \overbrace{p(f_\theta | y, \vectorx{x})}^{\toblue{posterior = non-Gaussien}}
         =
         \frac{
           \overbrace{p(y | \vectorx{x}, f_\theta)}^{\tored{likelihood = non-Gaussien}}
@@ -1213,15 +1213,23 @@ company,
     % \item $GP( m_{*}, k_{*, \theta} ) = p(f_{*, \theta}|\tored{y, x}) = \int p(f_{*, \theta} | f_{\theta}) p(f_{\theta} | y) df$
   \end{itemize}
   \pause
-  Méthode de \coloredemph{Kalman} ("State-space" model): \cite{Solin2014,Titsias2024}
+  \\
+  Méthodes de \coloredemph{Kalman} ("State-space" model): \cite{Solin2014,Titsias2024}
   \begin{itemize}
     \item (uniquement pour les données temporelles)
     \pause
     \item Réécriture du $GP$ en équation différentielle stochastique
     \pause
-    \item Apprentissage par l'algorithme de Kalman: $\xcancel{\mathcal{O}(n^3)}$, calcul $\mathcal{O}(n)$
+    \item Apprentissage: $\xcancel{\mathcal{O}(n^3)}$, calcul $\mathcal{O}(n)$
     \pause
-    \item La réecriture dépend du kernel: nécessite un kernel "pas trop compliqué" (état de recherche)
+    \item Réecriture dépend du kernel: état de recherche
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Prochain épisode}
+  \begin{itemize}
+    \item $GP$ pour les données non-Gaussiennes: méthodes et applications
+    \item Méthodes scalables (apprentissage + inférence) pour les $GP$
   \end{itemize}
 \end{frame}
 
